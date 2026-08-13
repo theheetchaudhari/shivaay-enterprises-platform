@@ -7,6 +7,7 @@ import Partners from './components/home/Partners';
 import WholeCTA from './components/home/WholeCTA';
 import Footer from './components/common/Footer';
 import Products from './pages/Products';
+import ProductDetails from './pages/ProductDetails';
 
 // Shared public layout — Navbar + page content + Footer
 function PublicLayout({ children }) {
@@ -37,6 +38,7 @@ function App() {
       {/* Public website only — admin routes live exclusively in admin-main.jsx */}
       <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
       <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
+      <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
     </Routes>
   );
 }

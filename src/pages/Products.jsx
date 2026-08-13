@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Package, Loader2, AlertCircle, ImageOff, Search, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 // ─── Animation variants (matches existing project patterns) ──────────────────
@@ -28,44 +29,46 @@ function ProductCard({ product, index }) {
       transition={{ duration: 0.4, delay: index * 0.06 }}
       className="bg-[#FFFFFF] rounded-[16px] border border-[#E5E7EB] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group"
     >
-      {/* Product image */}
-      <div className="relative h-52 sm:h-56 bg-[#F1F5F9] flex items-center justify-center overflow-hidden">
-        {hasImage ? (
-          <img
-            src={product.image_url}
-            alt={product.name || 'Product'}
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex flex-col items-center gap-2 text-[#CBD5E1]">
-            <ImageOff size={36} />
-            <span className="text-[13px] font-medium">No image</span>
-          </div>
-        )}
-      </div>
+      <Link to={`/products/${product.id}`} className="flex flex-col h-full flex-1 focus:outline-none focus:ring-2 focus:ring-[#DC2626]">
+        {/* Product image */}
+        <div className="relative h-52 sm:h-56 bg-[#F1F5F9] flex items-center justify-center overflow-hidden">
+          {hasImage ? (
+            <img
+              src={product.image_url}
+              alt={product.name || 'Product'}
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-2 text-[#CBD5E1]">
+              <ImageOff size={36} />
+              <span className="text-[13px] font-medium">No image</span>
+            </div>
+          )}
+        </div>
 
-      {/* Product info */}
-      <div className="p-5 sm:p-6 flex flex-col gap-2 flex-1">
-        <h3 className="text-[17px] md:text-[18px] font-bold text-[#0F172A] leading-snug line-clamp-2">
-          {product.name || 'Unnamed Product'}
-        </h3>
+        {/* Product info */}
+        <div className="p-5 sm:p-6 flex flex-col gap-2 flex-1">
+          <h3 className="text-[17px] md:text-[18px] font-bold text-[#0F172A] leading-snug line-clamp-2">
+            {product.name || 'Unnamed Product'}
+          </h3>
 
-        {product.description && (
-          <p className="text-[14px] md:text-[15px] text-[#6B7280] leading-relaxed line-clamp-3">
-            {product.description}
-          </p>
-        )}
+          {product.description && (
+            <p className="text-[14px] md:text-[15px] text-[#6B7280] leading-relaxed line-clamp-3">
+              {product.description}
+            </p>
+          )}
 
-        {formattedPrice && (
-          <div className="mt-auto pt-4 border-t border-[#F1F5F9]">
-            <span className="text-[20px] font-bold text-[#0F172A]">
-              {formattedPrice}
-            </span>
-          </div>
-        )}
-      </div>
+          {formattedPrice && (
+            <div className="mt-auto pt-4 border-t border-[#F1F5F9]">
+              <span className="text-[20px] font-bold text-[#0F172A]">
+                {formattedPrice}
+              </span>
+            </div>
+          )}
+        </div>
+      </Link>
     </motion.div>
   );
 }
@@ -147,9 +150,9 @@ const Products = () => {
     try {
       const { data, error: fetchErr } = await supabase
         .from('products')
-        .select('id, name, description, price, image_url, is_active')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .select('*')
+        .or('is_active.eq.true,is_active.is.null')
+        .order('created_at', { ascending: false, nullsFirst: false });
 
       if (fetchErr) throw fetchErr;
       setProducts(data ?? []);

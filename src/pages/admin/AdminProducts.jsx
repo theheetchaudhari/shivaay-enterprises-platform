@@ -478,6 +478,7 @@ const AdminProducts = () => {
         }
       } else {
         setUploadStatus('Saving product...');
+        const nowIso = new Date().toISOString();
         const { error } = await supabase.from('products').insert([
           {
             name: form.name.trim(),
@@ -485,6 +486,8 @@ const AdminProducts = () => {
             price: priceNum,
             image_url: finalImageUrl,
             is_active: form.is_active,
+            created_at: nowIso,
+            updated_at: nowIso,
           },
         ]);
 
