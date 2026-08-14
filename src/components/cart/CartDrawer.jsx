@@ -1,10 +1,35 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, MessageSquare } from 'lucide-react';
+import { X, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import CartItem from './CartItem';
+import WhatsAppIcon from '../common/WhatsAppIcon';
 
+// ─── WhatsApp Quote URL Generator ─────────────────────────────────────────────
+const WHATSAPP_NUMBER = '919408915910';
+
+function generateWhatsAppUrl(items) {
+  const itemLines = items
+    .map((item, i) => `${i + 1}. ${item.name} × ${item.quantity}`)
+    .join('\n');
+
+  const message = [
+    'Hello Shivaay Enterprise,',
+    '',
+    'I would like to request a quote for the following products:',
+    '',
+    itemLines,
+    '',
+    'Please share availability and wholesale pricing.',
+    '',
+    'Thank you.',
+  ].join('\n');
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+// ─── Cart Drawer ──────────────────────────────────────────────────────────────
 const CartDrawer = () => {
   const { items, isDrawerOpen, closeDrawer, totalItems, subtotal, hasPricelessItems, clearCart } = useCart();
   const drawerRef = useRef(null);
@@ -42,6 +67,12 @@ const CartDrawer = () => {
   const formattedSubtotal = `\u20B9${subtotal.toLocaleString('en-IN', {
     minimumFractionDigits: 2,
   })}`;
+
+  const handleRequestQuote = useCallback(() => {
+    if (items.length === 0) return;
+    const url = generateWhatsAppUrl(items);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, [items]);
 
   return (
     <AnimatePresence>
@@ -144,7 +175,7 @@ const CartDrawer = () => {
                 {/* Subtotal Row */}
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[13px] font-semibold text-[#64748B]">
-                    Subtotal
+                    Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'items'})
                   </span>
                   <span className="text-[16px] font-extrabold text-[#0F172A]">
                     {formattedSubtotal}
@@ -152,26 +183,28 @@ const CartDrawer = () => {
                 </div>
                 {hasPricelessItems && (
                   <p className="text-[11px] text-[#F59E0B] font-medium mb-3">
-                    * Some items require pricing — contact us for a full quote.
+                    * Some items require pricing — we'll share details on WhatsApp.
                   </p>
                 )}
                 {!hasPricelessItems && (
                   <p className="text-[11px] text-[#64748B] mb-3">
-                    Final price confirmed on order. Taxes & freight extra.
+                    Final pricing confirmed after quote. Taxes &amp; freight extra.
                   </p>
                 )}
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col gap-2.5 mt-1">
-                  <Link to="/contact" onClick={closeDrawer}>
-                    <button
-                      type="button"
-                      className="w-full h-[46px] rounded-[12px] bg-[#DC2626] text-[#FFFFFF] text-[15px] font-bold hover:bg-[#b91c1c] transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <MessageSquare size={17} />
-                      <span>Request a Quote</span>
-                    </button>
-                  </Link>
+                  {/* Primary: Request Quote on WhatsApp */}
+                  <button
+                    type="button"
+                    onClick={handleRequestQuote}
+                    className="w-full h-[46px] rounded-[12px] bg-[#25D366] text-[#FFFFFF] text-[15px] font-bold hover:bg-[#1DA851] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2.5 cursor-pointer"
+                  >
+                    <WhatsAppIcon size={20} className="shrink-0" />
+                    <span>Request Quote on WhatsApp</span>
+                  </button>
+
+                  {/* Secondary: Continue Shopping */}
                   <Link to="/products" onClick={closeDrawer}>
                     <button
                       type="button"
