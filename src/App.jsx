@@ -7,6 +7,7 @@ import WholeCTA from './components/home/WholeCTA';
 import Footer from './components/common/Footer';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
+import Contact from './pages/Contact';
 
 // Shared public layout — Navbar + page content + Footer
 function PublicLayout({ children }) {
@@ -37,6 +38,7 @@ function App() {
       <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
       <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
       <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
+      <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
     </Routes>
   );
 }
