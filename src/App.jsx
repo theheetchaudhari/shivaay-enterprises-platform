@@ -8,12 +8,17 @@ import Footer from './components/common/Footer';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
+import Login from './pages/Login';
+import About from './pages/About';
+import CartDrawer from './components/cart/CartDrawer';
+import { CartProvider } from './context/CartContext';
 
-// Shared public layout — Navbar + page content + Footer
+// Shared public layout — Navbar + CartDrawer + page content + Footer
 function PublicLayout({ children }) {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#111827] font-sans">
       <Navbar />
+      <CartDrawer />
       <main>{children}</main>
       <Footer />
     </div>
@@ -33,13 +38,17 @@ function HomePage() {
 
 function App() {
   return (
-    <Routes>
-      {/* Public website only — admin routes live exclusively in admin-main.jsx */}
-      <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-      <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
-      <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
-      <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-    </Routes>
+    <CartProvider>
+      <Routes>
+        {/* Public website only — admin routes live exclusively in admin-main.jsx */}
+        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+        <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
+        <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+        <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+      </Routes>
+    </CartProvider>
   );
 }
 

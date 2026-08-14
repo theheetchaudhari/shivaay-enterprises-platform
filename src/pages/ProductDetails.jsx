@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -15,9 +15,11 @@ import {
   MessageSquare,
   Sparkles,
   ChevronRight,
-  FileText
+  FileText,
+  Check
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useCart } from '../context/CartContext';
 
 // ─── Animation variants ──────────────────────────────────────────────────────
 const fadeUp = (delay = 0) => ({
@@ -118,8 +120,18 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imgError, setImgError] = useState(false);
+  const [addedFeedback, setAddedFeedback] = useState(false);
 
-  const fetchProductDetails = async () => {
+  const { addToCart, isInCart } = useCart();
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    addToCart(product);
+    setAddedFeedback(true);
+    setTimeout(() => setAddedFeedback(false), 1800);
+  };
+
+  const fetchProductDetails = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -143,11 +155,11 @@ const ProductDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchProductDetails();
-  }, [id]);
+  }, [fetchProductDetails]);
 
   if (loading) return <LoadingState />;
   if (error) return <ErrorState message={error} onRetry={fetchProductDetails} />;
@@ -306,9 +318,24 @@ const ProductDetails = () => {
 
             {/* Desktop Action Buttons */}
             <div className="pt-4 border-t border-[#E5E7EB] hidden md:flex flex-col sm:flex-row gap-3">
-              <button className="flex-1 h-[52px] rounded-[12px] bg-[#DC2626] text-[#FFFFFF] text-[15px] font-bold hover:bg-[#B91C1C] active:scale-[0.98] transition-all shadow-sm hover:shadow flex items-center justify-center gap-2 cursor-pointer">
-                <ShoppingCart size={18} />
-                <span>Add to Cart</span>
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className={`flex-1 h-[52px] rounded-[12px] text-[15px] font-bold active:scale-[0.98] transition-all shadow-sm hover:shadow flex items-center justify-center gap-2 cursor-pointer ${
+                  addedFeedback
+                    ? 'bg-[#16A34A] text-[#FFFFFF]'
+                    : isInCart(product?.id)
+                    ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A] hover:bg-[#DCFCE7]'
+                    : 'bg-[#DC2626] text-[#FFFFFF] hover:bg-[#B91C1C]'
+                }`}
+              >
+                {addedFeedback ? (
+                  <><Check size={18} /><span>Added to Cart!</span></>
+                ) : isInCart(product?.id) ? (
+                  <><ShoppingCart size={18} /><span>Add Again</span></>
+                ) : (
+                  <><ShoppingCart size={18} /><span>Add to Cart</span></>
+                )}
               </button>
 
               <Link to="/contact" className="flex-1">
@@ -326,12 +353,27 @@ const ProductDetails = () => {
 
       {/* Mobile Sticky Bottom Bar (Only visible on screens < 768px) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-[#E5E7EB] z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] flex items-center gap-2.5">
-        <button className="flex-1 h-[48px] rounded-[12px] bg-[#DC2626] text-white text-[14px] font-bold hover:bg-[#B91C1C] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-          <ShoppingCart size={18} />
-          <span>Add to Cart</span>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className={`flex-1 h-[48px] rounded-[12px] text-[14px] font-bold active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            addedFeedback
+              ? 'bg-[#16A34A] text-white'
+              : isInCart(product?.id)
+              ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A]'
+              : 'bg-[#DC2626] text-white hover:bg-[#B91C1C]'
+          }`}
+        >
+          {addedFeedback ? (
+            <><Check size={18} /><span>Added!</span></>
+          ) : isInCart(product?.id) ? (
+            <><ShoppingCart size={18} /><span>Add Again</span></>
+          ) : (
+            <><ShoppingCart size={18} /><span>Add to Cart</span></>
+          )}
         </button>
         <Link to="/contact" className="flex-1">
-          <button className="w-full h-[48px] rounded-[12px] bg-[#0F172A] text-white text-[14px] font-bold hover:bg-[#1E293B] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <button className="w-full h-[48px] rounded-[12px] bg-[#0F172A] text-white text-[14px] font-bold hover:bg-[#1E293B] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer">
             <MessageSquare size={18} />
             <span>Bulk Quote</span>
           </button>
