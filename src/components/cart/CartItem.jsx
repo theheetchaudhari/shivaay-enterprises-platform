@@ -9,15 +9,15 @@ const CartItem = ({ item }) => {
   const formattedPrice =
     item.price != null && !isNaN(Number(item.price))
       ? `\u20B9${Number(item.price).toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-        })}`
+        minimumFractionDigits: 2,
+      })}`
       : null;
 
   const lineTotal =
     item.price != null && !isNaN(Number(item.price))
       ? `\u20B9${(Number(item.price) * item.quantity).toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-        })}`
+        minimumFractionDigits: 2,
+      })}`
       : null;
 
   return (

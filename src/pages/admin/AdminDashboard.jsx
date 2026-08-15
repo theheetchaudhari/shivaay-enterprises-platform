@@ -162,7 +162,7 @@ const AdminDashboard = () => {
           <p className="text-[13px] font-semibold text-[#DC2626] mb-1 uppercase tracking-wider">
             Admin Portal
           </p>
-          <h2 className="text-[26px] sm:text-[30px] font-bold text-white leading-tight mb-2">
+          <h2 className="text-[26px] sm:text-[30px] font-heading font-bold text-white leading-tight mb-2">
             Welcome back, Admin 👋
           </h2>
           <p className="text-[14px] sm:text-[15px] text-[#94a3b8] max-w-[500px] leading-relaxed">

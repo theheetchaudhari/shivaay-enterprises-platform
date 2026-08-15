@@ -577,7 +577,7 @@ const AdminProducts = () => {
           <p className="text-[13px] font-semibold uppercase tracking-widest text-[#6B7280] mb-1">
             Catalogue
           </p>
-          <h2 className="text-[22px] sm:text-[26px] font-bold text-[#0F172A] leading-tight">
+          <h2 className="text-[22px] sm:text-[26px] font-heading font-bold text-[#0F172A] leading-tight">
             Products
             {!fetchLoading && (
               <span className="ml-2 text-[15px] font-medium text-[#6B7280]">

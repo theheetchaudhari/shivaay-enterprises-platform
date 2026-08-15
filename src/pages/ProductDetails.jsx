@@ -173,7 +173,7 @@ const ProductDetails = () => {
   return (
     <section className="w-full bg-[#F8FAFC] min-h-[calc(100vh-72px)] py-4 sm:py-6 lg:py-10 pb-28 md:pb-12">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-5 lg:px-6">
-        
+
         {/* Breadcrumb Navigation - Mobile optimized */}
         <motion.nav {...fadeUp()} className="mb-4 sm:mb-6">
           <div className="flex items-center gap-2 text-[13px] sm:text-[14px] text-[#6B7280] font-medium overflow-x-auto whitespace-nowrap pb-1">
@@ -251,12 +251,12 @@ const ProductDetails = () => {
                   In Stock & Ready
                 </span>
               </div>
-              
+
               {/* Product Title */}
               <h1 className="text-[24px] sm:text-[32px] lg:text-[38px] font-bold text-[#0F172A] leading-[1.2] mb-4 tracking-tight">
                 {product.name || 'Unnamed Product'}
               </h1>
-              
+
               {/* Price Box */}
               {formattedPrice ? (
                 <div className="bg-[#F8FAFC] border border-[#E5E7EB] rounded-[16px] p-4 sm:p-5 mb-6">
@@ -321,13 +321,12 @@ const ProductDetails = () => {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className={`flex-1 h-[52px] rounded-[12px] text-[15px] font-bold active:scale-[0.98] transition-all shadow-sm hover:shadow flex items-center justify-center gap-2 cursor-pointer ${
-                  addedFeedback
+                className={`flex-1 h-[52px] rounded-[12px] text-[15px] font-bold active:scale-[0.98] transition-all shadow-sm hover:shadow flex items-center justify-center gap-2 cursor-pointer ${addedFeedback
                     ? 'bg-[#16A34A] text-[#FFFFFF]'
                     : isInCart(product?.id)
-                    ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A] hover:bg-[#DCFCE7]'
-                    : 'bg-[#DC2626] text-[#FFFFFF] hover:bg-[#B91C1C]'
-                }`}
+                      ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A] hover:bg-[#DCFCE7]'
+                      : 'bg-[#DC2626] text-[#FFFFFF] hover:bg-[#B91C1C]'
+                  }`}
               >
                 {addedFeedback ? (
                   <><Check size={18} /><span>Added to Cart!</span></>
@@ -356,13 +355,12 @@ const ProductDetails = () => {
         <button
           type="button"
           onClick={handleAddToCart}
-          className={`flex-1 h-[48px] rounded-[12px] text-[14px] font-bold active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
-            addedFeedback
+          className={`flex-1 h-[48px] rounded-[12px] text-[14px] font-bold active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${addedFeedback
               ? 'bg-[#16A34A] text-white'
               : isInCart(product?.id)
-              ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A]'
-              : 'bg-[#DC2626] text-white hover:bg-[#B91C1C]'
-          }`}
+                ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A]'
+                : 'bg-[#DC2626] text-white hover:bg-[#B91C1C]'
+            }`}
         >
           {addedFeedback ? (
             <><Check size={18} /><span>Added!</span></>

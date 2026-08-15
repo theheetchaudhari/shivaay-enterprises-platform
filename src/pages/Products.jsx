@@ -15,8 +15,8 @@ function ProductCard({ product, index }) {
   const formattedPrice =
     product.price != null
       ? `\u20B9${Number(product.price).toLocaleString('en-IN', {
-          minimumFractionDigits: 2,
-        })}`
+        minimumFractionDigits: 2,
+      })}`
       : null;
 
   const inCart = isInCart(product.id);
@@ -120,13 +120,12 @@ function ProductCard({ product, index }) {
           type="button"
           onClick={handleAddToCart}
           aria-label={`Add ${product.name || 'product'} to cart`}
-          className={`w-full h-[34px] sm:h-[38px] rounded-[10px] text-[12px] sm:text-[13px] font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
-            addedFeedback
+          className={`w-full h-[34px] sm:h-[38px] rounded-[10px] text-[12px] sm:text-[13px] font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${addedFeedback
               ? 'bg-[#16A34A] text-[#FFFFFF]'
               : inCart
-              ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A] hover:bg-[#DCFCE7]'
-              : 'bg-[#0F172A] text-[#FFFFFF] hover:bg-[#1E293B]'
-          }`}
+                ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A] hover:bg-[#DCFCE7]'
+                : 'bg-[#0F172A] text-[#FFFFFF] hover:bg-[#1E293B]'
+            }`}
         >
           {addedFeedback ? (
             <>
@@ -271,7 +270,7 @@ const Products = () => {
             <div className="inline-flex items-center gap-1.5 text-[#DC2626] text-[12px] font-bold tracking-[0.14em] uppercase mb-1.5">
               <span>Wholesale &amp; Retail</span>
             </div>
-            <h1 className="text-[28px] sm:text-[34px] md:text-[38px] font-extrabold text-[#0F172A] tracking-tight">
+            <h1 className="text-[28px] sm:text-[34px] md:text-[38px] font-heading font-extrabold text-[#0F172A] tracking-tight">
               Our Products
             </h1>
             <p className="text-[14px] sm:text-[15px] text-[#64748B] mt-1">

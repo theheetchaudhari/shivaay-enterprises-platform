@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Manrope', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
+}
+
 @layer base {
   body {
-    @apply antialiased text-[#111827] bg-[#F8FAFC];
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply antialiased text-[#111827] bg-[#F8FAFC] dark:bg-[#0B1120] font-sans transition-colors duration-200;
   }
 }

@@ -19,7 +19,7 @@ const Login = () => {
             <div className="inline-flex items-center gap-1.5 text-[#DC2626] text-[12px] font-bold tracking-[0.14em] uppercase mb-3">
               Customer Account
             </div>
-            <h1 className="text-[26px] font-extrabold text-[#0F172A] tracking-tight mb-1">
+            <h1 className="text-[26px] font-heading font-extrabold text-[#0F172A] tracking-tight mb-1">
               Sign In
             </h1>
             <p className="text-[14px] text-[#64748B] leading-normal">

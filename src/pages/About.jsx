@@ -16,7 +16,7 @@ const About = () => {
           <p className="text-[12px] font-bold tracking-[0.14em] text-[#DC2626] uppercase mb-3">
             About Us
           </p>
-          <h1 className="text-[32px] sm:text-[40px] md:text-[48px] font-extrabold text-[#0F172A] tracking-tight leading-[1.15] mb-5">
+          <h1 className="text-[32px] sm:text-[40px] md:text-[48px] font-heading font-extrabold text-[#0F172A] tracking-tight leading-[1.15] mb-5">
             Shivaay Enterprise
           </h1>
           <p className="text-[16px] sm:text-[18px] text-[#64748B] leading-relaxed mb-8">

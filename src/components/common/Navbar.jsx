@@ -48,8 +48,7 @@ const Navbar = () => {
               key={link.name}
               to={link.path}
               className={({ isActive }) =>
-                `text-[16px] font-semibold transition-colors duration-200 ${
-                  isActive ? 'text-[#DC2626]' : 'text-[#F8FAFC] hover:text-[#DC2626]'
+                `text-[16px] font-semibold transition-colors duration-200 ${isActive ? 'text-[#DC2626]' : 'text-[#F8FAFC] hover:text-[#DC2626]'
                 }`
               }
               end={link.path === '/'}
@@ -146,10 +145,9 @@ const Navbar = () => {
                   onClick={closeMenu}
                   end={link.path === '/'}
                   className={({ isActive }) =>
-                    `text-[15px] font-semibold px-3 py-2.5 rounded-[10px] transition-colors duration-200 ${
-                      isActive
-                        ? 'text-[#DC2626] bg-[#1E293B]'
-                        : 'text-[#F8FAFC] hover:text-[#DC2626] hover:bg-[#1E293B]'
+                    `text-[15px] font-semibold px-3 py-2.5 rounded-[10px] transition-colors duration-200 ${isActive
+                      ? 'text-[#DC2626] bg-[#1E293B]'
+                      : 'text-[#F8FAFC] hover:text-[#DC2626] hover:bg-[#1E293B]'
                     }`
                   }
                 >

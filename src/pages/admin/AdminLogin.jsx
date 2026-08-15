@@ -66,7 +66,7 @@ const AdminLogin = () => {
               <ShieldCheck size={28} className="text-[#DC2626]" />
             </motion.div>
             <div className="text-center">
-              <h1 className="text-[22px] font-bold text-[#FFFFFF] leading-tight">
+              <h1 className="text-[22px] font-heading font-bold text-[#FFFFFF] leading-tight">
                 Admin Portal
               </h1>
               <p className="text-[14px] text-[#94a3b8] mt-1">

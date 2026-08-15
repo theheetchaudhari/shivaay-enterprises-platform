@@ -26,7 +26,7 @@ const ContactHero = () => {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.08 }}
-          className="text-[38px] sm:text-[48px] md:text-[56px] font-extrabold text-[#0F172A] leading-[1.12] tracking-tight mb-4 md:mb-5 max-w-3xl"
+          className="text-[38px] sm:text-[48px] md:text-[56px] font-heading font-extrabold text-[#0F172A] leading-[1.12] tracking-tight mb-4 md:mb-5 max-w-3xl"
         >
           Get in <span className="text-[#DC2626]">Touch</span>
         </motion.h1>

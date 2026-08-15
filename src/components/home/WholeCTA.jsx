@@ -40,7 +40,7 @@ const WholeCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="text-3xl md:text-[40px] lg:text-[52px] font-bold text-[#FFFFFF] leading-[1.15] mb-6 max-w-3xl"
+          className="text-3xl md:text-[40px] lg:text-[52px] font-heading font-bold text-[#FFFFFF] leading-[1.15] mb-6 max-w-3xl"
         >
           {ctaContent.heading}
         </motion.h2>

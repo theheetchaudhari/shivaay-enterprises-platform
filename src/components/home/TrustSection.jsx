@@ -35,9 +35,9 @@ const trustItems = [
 
 const TrustCard = ({ item, index }) => {
   const Icon = item.icon;
-  
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -62,7 +62,7 @@ const TrustSection = () => {
     <section className="w-full bg-[#FFFFFF] py-[56px] md:py-[72px] lg:py-[96px] px-4 sm:px-5 md:px-6">
       <div className="max-w-[1280px] mx-auto w-full flex flex-col items-center">
         {/* Eyebrow */}
-        <motion.span 
+        <motion.span
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
@@ -72,18 +72,18 @@ const TrustSection = () => {
         </motion.span>
 
         {/* Heading */}
-        <motion.h2 
+        <motion.h2
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ delay: 0.1 }}
-          className="text-[32px] md:text-[36px] lg:text-[44px] font-bold text-[#0F172A] mb-6 text-center leading-tight"
+          className="text-[32px] md:text-[36px] lg:text-[44px] font-heading font-bold text-[#0F172A] mb-6 text-center leading-tight"
         >
           Why Choose Us
         </motion.h2>
 
         {/* Description */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}

@@ -63,7 +63,7 @@ const ContactFAQ = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3, delay: 0.05 }}
-            className="text-[26px] sm:text-[32px] md:text-[36px] font-extrabold text-[#0F172A] tracking-tight"
+            className="text-[26px] sm:text-[32px] md:text-[36px] font-heading font-extrabold text-[#0F172A] tracking-tight"
           >
             Frequently Asked Questions
           </motion.h2>
@@ -90,11 +90,10 @@ const ContactFAQ = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: index * 0.04 }}
-                className={`rounded-[14px] border transition-all duration-200 overflow-hidden ${
-                  isOpen
+                className={`rounded-[14px] border transition-all duration-200 overflow-hidden ${isOpen
                     ? 'bg-[#FFFFFF] border-[#CBD5E1] shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
                     : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#CBD5E1]'
-                }`}
+                  }`}
               >
                 <button
                   type="button"
@@ -107,11 +106,10 @@ const ContactFAQ = () => {
                     {faq.question}
                   </span>
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-250 ${
-                      isOpen
+                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-250 ${isOpen
                         ? 'bg-[#FEF2F2] text-[#DC2626] rotate-180'
                         : 'bg-[#F8FAFC] text-[#64748B]'
-                    }`}
+                      }`}
                   >
                     <ChevronDown size={16} />
                   </div>

@@ -34,7 +34,7 @@ const ContactMap = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: 0.05 }}
-              className="text-[28px] sm:text-[32px] md:text-[36px] font-extrabold text-[#0F172A] tracking-tight"
+              className="text-[28px] sm:text-[32px] md:text-[36px] font-heading font-extrabold text-[#0F172A] tracking-tight"
             >
               Find Us
             </motion.h2>

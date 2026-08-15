@@ -29,7 +29,7 @@ const ContactCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.3, delay: 0.06 }}
-          className="text-[28px] sm:text-[36px] md:text-[42px] font-bold text-[#FFFFFF] leading-[1.18] mb-3.5 tracking-tight max-w-2xl"
+          className="text-[28px] sm:text-[36px] md:text-[42px] font-heading font-bold text-[#FFFFFF] leading-[1.18] mb-3.5 tracking-tight max-w-2xl"
         >
           Need Help With Your Order?
         </motion.h2>
