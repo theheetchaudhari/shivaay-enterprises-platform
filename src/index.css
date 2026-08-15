@@ -4,6 +4,14 @@
   --font-sans: 'Manrope', sans-serif;
   --font-body: 'Manrope', sans-serif;
   --font-heading: 'Space Grotesk', sans-serif;
+  --font-wellfleet: 'Wellfleet', cursive;
+  --font-barriecito: 'Barriecito', cursive;
+  --font-akronim: 'Akronim', cursive;
+  --font-niconne: 'Niconne', cursive;
+  --font-caesar: 'Caesar Dressing', cursive;
+  --font-love: 'Love Ya Like A Sister', cursive;
+  --font-roadrage: 'Road Rage', cursive;
+  --font-frijole: 'Frijole', cursive;
 }
 
 @layer base {

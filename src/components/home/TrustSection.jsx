@@ -66,9 +66,9 @@ const TrustSection = () => {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="text-[#DC2626] text-[14px] font-bold uppercase tracking-widest mb-4"
+          className="font-wellfleet text-[#DC2626] text-[20px] md:text-[24px] mb-2"
         >
-          OUR PROMISE
+          Our Promise
         </motion.span>
 
         {/* Heading */}

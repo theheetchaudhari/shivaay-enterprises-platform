@@ -13,7 +13,7 @@ const About = () => {
           transition={{ duration: 0.4 }}
           className="max-w-[760px] mx-auto text-center"
         >
-          <p className="text-[12px] font-bold tracking-[0.14em] text-[#DC2626] uppercase mb-3">
+          <p className="font-love text-[#DC2626] text-[18px] tracking-widest mb-2">
             About Us
           </p>
           <h1 className="text-[32px] sm:text-[40px] md:text-[48px] font-heading font-extrabold text-[#0F172A] tracking-tight leading-[1.15] mb-5">

@@ -242,11 +242,14 @@ const ProductDetails = () => {
             <div>
               {/* Product Badges */}
               <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="inline-flex font-roadrage items-center justify-center px-3 py-0.5 bg-[#DC2626] text-[#FFFFFF] text-[16px] sm:text-[18px] tracking-widest rounded-md leading-none pt-1">
+                  NEW
+                </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FEF2F2] text-[#DC2626] text-[11px] sm:text-[12px] font-bold uppercase tracking-wider rounded-full border border-[#FECACA]">
                   <Sparkles size={12} />
                   Wholesale Direct
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F0FDF4] text-[#16A34A] text-[11px] sm:text-[12px] font-bold uppercase tracking-wider rounded-full border border-[#BBF7D0]">
+                <span className="inline-flex font-love items-center gap-1.5 px-3 py-0.5 bg-[#F0FDF4] text-[#16A34A] text-[14px] sm:text-[16px] tracking-wider rounded-full border border-[#BBF7D0] leading-none pt-1 pb-1">
                   <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse"></span>
                   In Stock & Ready
                 </span>

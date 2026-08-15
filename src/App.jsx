@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/common/ScrollToTop';
 import Navbar from './components/common/Navbar';
 import Hero from './components/home/Hero';
 import TrustSection from './components/home/TrustSection';
@@ -39,6 +40,7 @@ function HomePage() {
 function App() {
   return (
     <CartProvider>
+      <ScrollToTop />
       <Routes>
         {/* Public website only — admin routes live exclusively in admin-main.jsx */}
         <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />

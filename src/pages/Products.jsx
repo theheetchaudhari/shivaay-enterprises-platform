@@ -62,7 +62,7 @@ function ProductCard({ product, index }) {
 
           {product.category && (
             <div className="absolute top-2.5 left-2.5">
-              <span className="inline-block bg-[#FFFFFF]/90 backdrop-blur-sm border border-[#E2E8F0] text-[#475569] text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full tracking-wide">
+              <span className="inline-block font-akronim bg-[#FFFFFF]/90 backdrop-blur-sm border border-[#E2E8F0] text-[#475569] text-[14px] sm:text-[16px] px-2.5 py-0.5 rounded-full tracking-wider leading-none pt-1">
                 {product.category}
               </span>
             </div>
@@ -267,7 +267,7 @@ const Products = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="inline-flex items-center gap-1.5 text-[#DC2626] text-[12px] font-bold tracking-[0.14em] uppercase mb-1.5">
+            <div className="inline-flex font-barriecito items-center gap-1.5 text-[#DC2626] text-[18px] tracking-widest uppercase mb-1.5">
               <span>Wholesale &amp; Retail</span>
             </div>
             <h1 className="text-[28px] sm:text-[34px] md:text-[38px] font-heading font-extrabold text-[#0F172A] tracking-tight">

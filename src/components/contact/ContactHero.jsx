@@ -16,7 +16,7 @@ const ContactHero = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DC2626] opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DC2626]" />
           </span>
-          <span className="text-[#0F172A] text-[12px] md:text-[13px] font-semibold tracking-wide uppercase">
+          <span className="font-wellfleet text-[#0F172A] text-[14px] md:text-[16px] tracking-wide pt-0.5">
             Direct Support & Enquiries
           </span>
         </motion.div>

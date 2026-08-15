@@ -30,7 +30,7 @@ const WholeCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="inline-block text-[#DC2626] text-sm md:text-base font-bold tracking-[0.15em] uppercase mb-4 md:mb-5"
+          className="inline-block font-caesar text-[#DC2626] text-[20px] md:text-[24px] tracking-widest mb-4 md:mb-5"
         >
           {ctaContent.eyebrow}
         </motion.div>
