@@ -8,7 +8,7 @@ const ctaContent = {
   description: "Partner with Shivaay Enterprises for quality FMCG and beverage products at competitive wholesale prices. Let's build a reliable supply relationship for your business.",
   primaryButton: {
     text: "Get Started Today",
-    path: "/register"
+    path: "/products"
   },
   secondaryButton: {
     text: "Contact Us",
