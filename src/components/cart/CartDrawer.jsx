@@ -9,19 +9,42 @@ import WhatsAppIcon from '../common/WhatsAppIcon';
 // ─── WhatsApp Quote URL Generator ─────────────────────────────────────────────
 const WHATSAPP_NUMBER = '919408915910';
 
-function generateWhatsAppUrl(items) {
+function formatWhatsAppCurrency(amount) {
+  return Number(amount).toLocaleString('en-IN', {
+    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function generateWhatsAppUrl(items, totalItems, subtotal) {
   const itemLines = items
-    .map((item, i) => `${i + 1}. ${item.name} × ${item.quantity}`)
-    .join('\n');
+    .map((item, i) => {
+      const hasPrice = item.price != null && !isNaN(Number(item.price));
+      if (hasPrice) {
+        const price = Number(item.price);
+        const lineTotal = price * item.quantity;
+        return `${i + 1}. ${item.name}\n   Qty: ${item.quantity} × \u20B9${formatWhatsAppCurrency(price)} = \u20B9${formatWhatsAppCurrency(lineTotal)}`;
+      } else {
+        return `${i + 1}. ${item.name}\n   Qty: ${item.quantity} × Price on Request`;
+      }
+    })
+    .join('\n\n');
+
+  const border = '━━━━━━━━━━━━━━━━━━';
 
   const message = [
     'Hello Shivaay Enterprise,',
     '',
-    'I would like to request a quote for the following products:',
+    'I would like to place an order for:',
     '',
     itemLines,
     '',
-    'Please share availability and wholesale pricing.',
+    border,
+    `Total Items: ${totalItems}`,
+    `Total Amount: \u20B9${formatWhatsAppCurrency(subtotal)}`,
+    border,
+    '',
+    'Please confirm the order and delivery details.',
     '',
     'Thank you.',
   ].join('\n');
@@ -70,9 +93,9 @@ const CartDrawer = () => {
 
   const handleRequestQuote = useCallback(() => {
     if (items.length === 0) return;
-    const url = generateWhatsAppUrl(items);
+    const url = generateWhatsAppUrl(items, totalItems, subtotal);
     window.open(url, '_blank', 'noopener,noreferrer');
-  }, [items]);
+  }, [items, totalItems, subtotal]);
 
   return (
     <AnimatePresence>
