@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import { MapPin, Navigation, ArrowUpRight } from 'lucide-react';
 
 const GOOGLE_MAPS_EMBED_URL =
-  'https://www.google.com/maps?q=New%20Mangaldeep%20Society%20A-326%2C%20Rajpipla%20Rd%2C%20Udhyagnagar%2C%20Hifazat%20Nagar%2C%20Ankleshwar%2C%20Bharuch%2C%20Gujarat%20-%20393010%2C%20India&output=embed';
+  'https://www.google.com/maps?q=New%20Mangaldeep%20Society%20A-326%2C%20Rajpipla%20Rd%2C%20Udhyagnagar%2C%20Hifazat%20Nagar%2C%20Ankleshwar%2C%20Bharuch%2C%20Gujarat%20-%20393002%2C%20India&output=embed';
 
 const GOOGLE_MAPS_EXTERNAL_URL =
-  'https://www.google.com/maps/search/?api=1&query=New+Mangaldeep+Society+A-326%2C+Rajpipla+Rd%2C+Udhyagnagar%2C+Hifazat+Nagar%2C+Ankleshwar%2C+Bharuch%2C+Gujarat+-+393010%2C+India';
+  'https://www.google.com/maps/search/?api=1&query=New+Mangaldeep+Society+A-326%2C+Rajpipla+Rd%2C+Udhyagnagar%2C+Hifazat+Nagar%2C+Ankleshwar%2C+Bharuch%2C+Gujarat+-+393002%2C+India';
 
 const ADDRESS_TEXT =
-  'New Mangaldeep Society A-326, Rajpipla Rd, Udhyagnagar, Hifazat Nagar, Ankleshwar, Bharuch, Gujarat - 393010, India';
+  'New Mangaldeep Society A-326, Rajpipla Rd, Udhyagnagar, Hifazat Nagar, Ankleshwar, Bharuch, Gujarat - 393002, India';
 
 const ContactMap = () => {
   return (

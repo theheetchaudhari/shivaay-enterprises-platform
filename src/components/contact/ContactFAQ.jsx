@@ -25,13 +25,13 @@ const faqs = [
     id: 'faq-4',
     question: 'Where are you located?',
     answer:
-      'We are located at New Mangaldeep Society A-326, Rajpipla Rd, Udhyagnagar, Hifazat Nagar, Ankleshwar, Bharuch, Gujarat - 393010, India.',
+      'We are located at New Mangaldeep Society A-326, Rajpipla Rd, Udhyagnagar, Hifazat Nagar, Ankleshwar, Bharuch, Gujarat - 393002, India.',
   },
   {
     id: 'faq-5',
     question: 'What are your working hours?',
     answer:
-      'We are open Monday to Sunday, from 7:00 AM to 10:00 AM.',
+      'We are open Monday to Sunday, from 7:00 AM to 10:00 PM.',
   },
 ];
 
