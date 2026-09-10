@@ -18,7 +18,7 @@ import {
   FileText,
   Check
 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { publicSupabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 
 // ─── Animation variants ──────────────────────────────────────────────────────
@@ -135,7 +135,7 @@ const ProductDetails = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: fetchErr } = await supabase
+      const { data, error: fetchErr } = await publicSupabase
         .from('products')
         .select('id, name, description, price, image_url, is_active')
         .eq('id', id)

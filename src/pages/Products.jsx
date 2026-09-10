@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Package, Loader2, AlertCircle, ImageOff, Search, X, ArrowUpRight, ShoppingCart, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { publicSupabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 
 // ─── Product Card Component ───────────────────────────────────────────────────
@@ -228,7 +228,7 @@ const Products = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: fetchErr } = await supabase
+      const { data, error: fetchErr } = await publicSupabase
         .from('products')
         .select('*')
         .or('is_active.eq.true,is_active.is.null')
