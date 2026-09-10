@@ -51,30 +51,45 @@ function generateWhatsAppUrl(items, totalItems, subtotal, customerDetails) {
   if (customerDetails && customerDetails.profile) {
     const p = customerDetails.profile;
     const a = customerDetails.address;
-    
-    if (p.full_name) messageParts.push(`Customer Name: ${p.full_name}`);
-    if (p.phone) messageParts.push(`Phone: ${p.phone}`);
-    
+
+    messageParts.push('CUSTOMER DETAILS');
     messageParts.push('');
-    messageParts.push('Delivery Address:');
-    
-    if (a && (a.address_line_1 || a.area || a.city)) {
-      if (a.address_line_1) messageParts.push(a.address_line_1);
-      if (a.address_line_2) messageParts.push(a.address_line_2);
-      if (a.area) messageParts.push(a.area);
-      if (a.city && a.state && a.pincode) {
-        messageParts.push(`${a.city}, ${a.state} - ${a.pincode}`);
+    messageParts.push(`Name: ${(p.full_name || '').trim()}`);
+    messageParts.push(`Phone: ${(p.phone || '').trim()}`);
+    messageParts.push('');
+
+    const addressLines = ['Address:'];
+    if (a?.address_line_1?.trim()) addressLines.push(a.address_line_1.trim());
+    if (a?.address_line_2?.trim()) addressLines.push(a.address_line_2.trim());
+    if (a?.area?.trim()) addressLines.push(a.area.trim());
+
+    const city = a?.city?.trim();
+    const state = a?.state?.trim();
+    const pincode = a?.pincode?.trim();
+    if (city || state || pincode) {
+      let locationLine = city && state ? `${city}, ${state}` : city || state || '';
+      if (pincode) {
+        locationLine = locationLine ? `${locationLine} - ${pincode}` : pincode;
       }
-      if (a.landmark) messageParts.push(a.landmark);
-      
-      if (a.latitude && a.longitude) {
-        messageParts.push('');
-        messageParts.push(`Google Maps Location: https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`);
-      }
-    } else {
-      messageParts.push('Not saved');
+      if (locationLine) addressLines.push(locationLine);
     }
+
+    if (a?.landmark?.trim()) addressLines.push(a.landmark.trim());
+
+    messageParts.push(addressLines.join('\n'));
     messageParts.push('');
+
+    const hasCoords =
+      a &&
+      a.latitude != null &&
+      a.longitude != null &&
+      String(a.latitude).trim() !== '' &&
+      String(a.longitude).trim() !== '';
+
+    if (hasCoords) {
+      messageParts.push(`📍 Map: https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`);
+      messageParts.push('');
+    }
   } else {
     messageParts.push('Please confirm the order and delivery details.');
     messageParts.push('');
