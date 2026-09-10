@@ -52,16 +52,17 @@ function generateWhatsAppUrl(items, totalItems, subtotal, customerDetails) {
     const p = customerDetails.profile;
     const a = customerDetails.address;
 
-    messageParts.push('CUSTOMER DETAILS');
+    messageParts.push('*CUSTOMER DETAILS*');
     messageParts.push('');
-    messageParts.push(`Name: ${(p.full_name || '').trim()}`);
+    const fullName = (p.full_name || '').trim();
+    messageParts.push(fullName ? `Name: *${fullName}*` : 'Name:');
     messageParts.push(`Phone: ${(p.phone || '').trim()}`);
     messageParts.push('');
 
     const addressLines = ['Address:'];
-    if (a?.address_line_1?.trim()) addressLines.push(a.address_line_1.trim());
-    if (a?.address_line_2?.trim()) addressLines.push(a.address_line_2.trim());
-    if (a?.area?.trim()) addressLines.push(a.area.trim());
+    if (a?.address_line_1?.trim()) addressLines.push(`*${a.address_line_1.trim()}*`);
+    if (a?.address_line_2?.trim()) addressLines.push(`*${a.address_line_2.trim()}*`);
+    if (a?.area?.trim()) addressLines.push(`*${a.area.trim()}*`);
 
     const city = a?.city?.trim();
     const state = a?.state?.trim();
@@ -71,10 +72,10 @@ function generateWhatsAppUrl(items, totalItems, subtotal, customerDetails) {
       if (pincode) {
         locationLine = locationLine ? `${locationLine} - ${pincode}` : pincode;
       }
-      if (locationLine) addressLines.push(locationLine);
+      if (locationLine) addressLines.push(`*${locationLine}*`);
     }
 
-    if (a?.landmark?.trim()) addressLines.push(a.landmark.trim());
+    if (a?.landmark?.trim()) addressLines.push(`*${a.landmark.trim()}*`);
 
     messageParts.push(addressLines.join('\n'));
     messageParts.push('');
