@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingCart, UserCircle2 } from 'lucide-react';
+import { Menu, X, ShoppingCart, UserCircle2, LogOut } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -14,6 +15,7 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { totalItems, openDrawer } = useCart();
+  const { user, signOut } = useCustomerAuth();
   const navigate = useNavigate();
 
   const closeMenu = () => setIsOpen(false);
@@ -25,8 +27,17 @@ const Navbar = () => {
 
   const handleAccountClick = () => {
     closeMenu();
-    navigate('/login');
+    navigate(user ? '/profile' : '/login');
   };
+
+  // Derived: avatar info when signed in
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split('@')[0] ||
+    null;
+  const avatarUrl = user?.user_metadata?.avatar_url || null;
+  const initial = displayName ? displayName.charAt(0).toUpperCase() : null;
 
   return (
     <nav className="sticky top-0 z-50 w-full h-[72px] bg-[#0F172A] flex items-center shadow-sm">
@@ -83,17 +94,48 @@ const Navbar = () => {
             )}
           </motion.button>
 
-          {/* Account / Profile Icon */}
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleAccountClick}
-            aria-label="Go to login / account"
-            className="w-10 h-10 rounded-[10px] bg-[#1E293B] hover:bg-[#334155] flex items-center justify-center text-[#F8FAFC] transition-colors cursor-pointer"
-          >
-            <UserCircle2 size={20} />
-          </motion.button>
+          {/* Account / Profile Icon — auth-aware */}
+          {user ? (
+            // Signed in: show avatar + sign-out button
+            <div className="flex items-center gap-2">
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAccountClick}
+                aria-label={`Account: ${displayName}`}
+                className="w-10 h-10 rounded-full border-2 border-[#334155] overflow-hidden flex items-center justify-center bg-[#1E293B] cursor-pointer"
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[#F8FAFC] text-[14px] font-bold select-none">{initial}</span>
+                )}
+              </motion.button>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { closeMenu(); signOut(); }}
+                aria-label="Sign out"
+                className="w-10 h-10 rounded-[10px] bg-[#1E293B] hover:bg-[#334155] flex items-center justify-center text-[#94A3B8] hover:text-[#F8FAFC] transition-colors cursor-pointer"
+              >
+                <LogOut size={18} />
+              </motion.button>
+            </div>
+          ) : (
+            // Signed out: show generic user icon → /login
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleAccountClick}
+              aria-label="Go to login / account"
+              className="w-10 h-10 rounded-[10px] bg-[#1E293B] hover:bg-[#334155] flex items-center justify-center text-[#F8FAFC] transition-colors cursor-pointer"
+            >
+              <UserCircle2 size={20} />
+            </motion.button>
+          )}
         </div>
 
         {/* Mobile: Cart + Menu Toggle */}
@@ -158,14 +200,44 @@ const Navbar = () => {
 
             {/* Mobile Account Button */}
             <div className="pt-3 border-t border-[#1E293B]">
-              <button
-                type="button"
-                onClick={handleAccountClick}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[#F8FAFC] hover:bg-[#1E293B] transition-colors cursor-pointer"
-              >
-                <UserCircle2 size={18} className="text-[#94A3B8]" />
-                <span className="text-[15px] font-semibold">My Account</span>
-              </button>
+              {user ? (
+                // Signed in — show avatar info + sign-out
+                <div className="flex items-center justify-between px-3 py-2.5">
+                  <button 
+                    type="button"
+                    onClick={handleAccountClick}
+                    className="flex items-center gap-3 min-w-0 flex-1 hover:bg-[#1E293B] p-1.5 -ml-1.5 rounded-[10px] transition-colors text-left cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-full border border-[#334155] overflow-hidden flex items-center justify-center bg-[#1E293B] shrink-0">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[#F8FAFC] text-[12px] font-bold select-none">{initial}</span>
+                      )}
+                    </div>
+                    <span className="text-[14px] font-semibold text-[#F8FAFC] truncate">{displayName}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { closeMenu(); signOut(); }}
+                    aria-label="Sign out"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B] transition-colors text-[13px] font-semibold cursor-pointer"
+                  >
+                    <LogOut size={15} />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                // Signed out — navigate to login
+                <button
+                  type="button"
+                  onClick={handleAccountClick}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[#F8FAFC] hover:bg-[#1E293B] transition-colors cursor-pointer"
+                >
+                  <UserCircle2 size={18} className="text-[#94A3B8]" />
+                  <span className="text-[15px] font-semibold">My Account</span>
+                </button>
+              )}
             </div>
           </motion.div>
         )}

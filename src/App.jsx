@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/common/ScrollToTop';
 import Navbar from './components/common/Navbar';
@@ -11,8 +10,12 @@ import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import About from './pages/About';
+import AuthCallback from './pages/AuthCallback';
+import Profile from './pages/Profile';
+import CustomerProtectedRoute from './components/auth/CustomerProtectedRoute';
 import CartDrawer from './components/cart/CartDrawer';
 import { CartProvider } from './context/CartContext';
+import { CustomerAuthProvider } from './context/CustomerAuthContext';
 
 // Shared public layout — Navbar + CartDrawer + page content + Footer
 function PublicLayout({ children }) {
@@ -40,16 +43,22 @@ function HomePage() {
 function App() {
   return (
     <CartProvider>
-      <ScrollToTop />
-      <Routes>
-        {/* Public website only — admin routes live exclusively in admin-main.jsx */}
-        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-        <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
-        <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
-        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-        <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
-        <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
-      </Routes>
+      {/* CustomerAuthProvider must be inside BrowserRouter (via main.jsx) and CartProvider */}
+      <CustomerAuthProvider>
+        <ScrollToTop />
+        <Routes>
+          {/* Public website only — admin routes live exclusively in admin-main.jsx */}
+          <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+          <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
+          <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
+          <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+          <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+          <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+          <Route path="/profile" element={<CustomerProtectedRoute><PublicLayout><Profile /></PublicLayout></CustomerProtectedRoute>} />
+          {/* OAuth callback — bare page, no PublicLayout wrapper */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+        </Routes>
+      </CustomerAuthProvider>
     </CartProvider>
   );
 }
