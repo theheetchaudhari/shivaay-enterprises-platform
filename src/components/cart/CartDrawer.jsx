@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
+import { supabase } from '../../lib/supabase';
 import CartItem from './CartItem';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 
@@ -16,7 +18,7 @@ function formatWhatsAppCurrency(amount) {
   });
 }
 
-function generateWhatsAppUrl(items, totalItems, subtotal) {
+function generateWhatsAppUrl(items, totalItems, subtotal, customerDetails) {
   const itemLines = items
     .map((item, i) => {
       const hasPrice = item.price != null && !isNaN(Number(item.price));
@@ -32,7 +34,7 @@ function generateWhatsAppUrl(items, totalItems, subtotal) {
 
   const border = '━━━━━━━━━━━━━━━━━━';
 
-  const message = [
+  const messageParts = [
     'Hello Shivaay Enterprise,',
     '',
     'I would like to place an order for:',
@@ -44,19 +46,78 @@ function generateWhatsAppUrl(items, totalItems, subtotal) {
     `Total Amount: \u20B9${formatWhatsAppCurrency(subtotal)}`,
     border,
     '',
-    'Please confirm the order and delivery details.',
-    '',
-    'Thank you.',
-  ].join('\n');
+  ];
 
+  if (customerDetails && customerDetails.profile) {
+    const p = customerDetails.profile;
+    const a = customerDetails.address;
+    
+    if (p.full_name) messageParts.push(`Customer Name: ${p.full_name}`);
+    if (p.phone) messageParts.push(`Phone: ${p.phone}`);
+    
+    messageParts.push('');
+    messageParts.push('Delivery Address:');
+    
+    if (a && (a.address_line_1 || a.area || a.city)) {
+      if (a.address_line_1) messageParts.push(a.address_line_1);
+      if (a.address_line_2) messageParts.push(a.address_line_2);
+      if (a.area) messageParts.push(a.area);
+      if (a.city && a.state && a.pincode) {
+        messageParts.push(`${a.city}, ${a.state} - ${a.pincode}`);
+      }
+      if (a.landmark) messageParts.push(a.landmark);
+      
+      if (a.latitude && a.longitude) {
+        messageParts.push('');
+        messageParts.push(`Google Maps Location: https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`);
+      }
+    } else {
+      messageParts.push('Not saved');
+    }
+    messageParts.push('');
+  } else {
+    messageParts.push('Please confirm the order and delivery details.');
+    messageParts.push('');
+  }
+
+  messageParts.push('Thank you.');
+
+  const message = messageParts.join('\n');
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 // ─── Cart Drawer ──────────────────────────────────────────────────────────────
 const CartDrawer = () => {
   const { items, isDrawerOpen, closeDrawer, totalItems, subtotal, hasPricelessItems, clearCart } = useCart();
+  const { user } = useCustomerAuth();
   const drawerRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const [customerDetails, setCustomerDetails] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (user && isDrawerOpen) {
+      async function fetchDetails() {
+        try {
+          const [profileRes, addressRes] = await Promise.all([
+            supabase.from('customers').select('*').eq('id', user.id).maybeSingle(),
+            supabase.from('customer_addresses').select('*').eq('customer_id', user.id).maybeSingle()
+          ]);
+          
+          if (isMounted) {
+            setCustomerDetails({
+              profile: profileRes.data || null,
+              address: addressRes.data || null
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching customer details for cart:', error);
+        }
+      }
+      fetchDetails();
+    }
+    return () => { isMounted = false; };
+  }, [user, isDrawerOpen]);
 
   // Focus the close button when drawer opens
   useEffect(() => {
@@ -93,9 +154,9 @@ const CartDrawer = () => {
 
   const handleRequestQuote = useCallback(() => {
     if (items.length === 0) return;
-    const url = generateWhatsAppUrl(items, totalItems, subtotal);
+    const url = generateWhatsAppUrl(items, totalItems, subtotal, customerDetails);
     window.open(url, '_blank', 'noopener,noreferrer');
-  }, [items, totalItems, subtotal]);
+  }, [items, totalItems, subtotal, customerDetails]);
 
   return (
     <AnimatePresence>
