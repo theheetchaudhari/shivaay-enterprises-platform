@@ -243,7 +243,7 @@ const AdminDashboard = () => {
         <div className="relative shrink-0">
           <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-[12px] px-4 py-2.5 text-white text-[13px] font-medium">
             <ArrowUpRight size={16} className="text-[#DC2626]" />
-            Panel v1.0
+            Panel v2.0
           </div>
         </div>
       </motion.div>

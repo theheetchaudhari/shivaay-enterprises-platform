@@ -25,9 +25,9 @@ const AuthCallback = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // Successfully authenticated — go to the storefront
+        // Successfully authenticated — guide customer to complete their profile
         subscription.unsubscribe();
-        navigate('/', { replace: true });
+        navigate('/profile', { replace: true });
       } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         subscription.unsubscribe();
         navigate('/login', { replace: true });
@@ -38,7 +38,7 @@ const AuthCallback = () => {
     const timeout = setTimeout(() => {
       supabase.auth.getSession().then(({ data: { session }, error: err }) => {
         if (session) {
-          navigate('/', { replace: true });
+          navigate('/profile', { replace: true });
         } else {
           setError(
             err?.message ||

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, ShoppingCart, UserCircle, LogIn, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { supabase } from '../../lib/supabase';
@@ -105,14 +105,20 @@ function generateWhatsAppUrl(items, totalItems, subtotal, customerDetails) {
 // ─── Cart Drawer ──────────────────────────────────────────────────────────────
 const CartDrawer = () => {
   const { items, isDrawerOpen, closeDrawer, totalItems, subtotal, hasPricelessItems, clearCart } = useCart();
-  const { user } = useCustomerAuth();
+  const { user, loading: authLoading } = useCustomerAuth();
+  const navigate = useNavigate();
   const drawerRef = useRef(null);
   const closeButtonRef = useRef(null);
   const [customerDetails, setCustomerDetails] = useState(null);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [incompleteMessage, setIncompleteMessage] = useState(null);
+  // loginPrompt: true when a guest clicked Request Quote
+  const [loginPrompt, setLoginPrompt] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
     if (user && isDrawerOpen) {
+      setDetailsLoading(true);
       async function fetchDetails() {
         try {
           const [profileRes, addressRes] = await Promise.all([
@@ -128,12 +134,25 @@ const CartDrawer = () => {
           }
         } catch (error) {
           console.error('Error fetching customer details for cart:', error);
+        } finally {
+          if (isMounted) setDetailsLoading(false);
         }
       }
       fetchDetails();
     }
     return () => { isMounted = false; };
   }, [user, isDrawerOpen]);
+
+  // Clear banners and fetch state whenever the drawer reopens
+  // (customer may have just logged in or completed their profile)
+  useEffect(() => {
+    if (isDrawerOpen) {
+      setIncompleteMessage(null);
+      setLoginPrompt(false);
+      // Reset detailsLoading for the next fetch cycle
+      if (!user) setDetailsLoading(false);
+    }
+  }, [isDrawerOpen, user]);
 
   // Focus the close button when drawer opens
   useEffect(() => {
@@ -170,9 +189,63 @@ const CartDrawer = () => {
 
   const handleRequestQuote = useCallback(() => {
     if (items.length === 0) return;
+
+    // ── Gate 1: Guest check ────────────────────────────────────────────────
+    // Auth state is still resolving — do nothing (button is disabled below)
+    if (authLoading) return;
+
+    if (!user) {
+      // Not logged in — show login prompt, do NOT generate WhatsApp URL
+      setLoginPrompt(true);
+      return;
+    }
+
+    // ── Gate 2: Customer details still loading ─────────────────────────────
+    // Prevent a fast click from bypassing profile validation
+    if (detailsLoading) return;
+
+    // ── Gate 3: Profile completeness check (authenticated users only) ──────
+    if (customerDetails !== null) {
+      const p = customerDetails.profile;
+      const a = customerDetails.address;
+
+      const missingName    = !p?.full_name?.trim();
+      const missingPhone   = !p?.phone?.trim();
+      const missingAddress =
+        !a?.address_line_1?.trim() ||
+        !a?.area?.trim()           ||
+        !a?.city?.trim()           ||
+        !a?.state?.trim()          ||
+        !a?.pincode?.trim();
+
+      const missingProfileInfo = missingName || missingPhone;
+
+      if (missingProfileInfo || missingAddress) {
+        let msg;
+        if (missingProfileInfo && missingAddress) {
+          msg = 'Please complete your profile and delivery address before requesting a quote.';
+        } else if (missingProfileInfo) {
+          if (missingName && missingPhone) {
+            msg = 'Please add your full name and phone number before requesting a quote.';
+          } else if (missingName) {
+            msg = 'Please add your full name before requesting a quote.';
+          } else {
+            msg = 'Please add your phone number before requesting a quote.';
+          }
+        } else {
+          msg = 'Please add your delivery address before requesting a quote.';
+        }
+        setIncompleteMessage(msg);
+        return;
+      }
+    }
+
+    // All checks passed — proceed with existing WhatsApp flow (unchanged)
+    setIncompleteMessage(null);
+    setLoginPrompt(false);
     const url = generateWhatsAppUrl(items, totalItems, subtotal, customerDetails);
     window.open(url, '_blank', 'noopener,noreferrer');
-  }, [items, totalItems, subtotal, customerDetails]);
+  }, [items, totalItems, subtotal, customerDetails, user, authLoading, detailsLoading]);
 
   return (
     <AnimatePresence>
@@ -294,14 +367,96 @@ const CartDrawer = () => {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col gap-2.5 mt-1">
+
+                  {/* Incomplete profile banner — authenticated users only */}
+                  <AnimatePresence>
+                    {incompleteMessage && (
+                      <motion.div
+                        key="incomplete-banner"
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.22 }}
+                        className="flex flex-col gap-2 px-4 py-3 bg-[#FFF7ED] border border-[#FED7AA] rounded-[12px]"
+                        role="alert"
+                        aria-live="assertive"
+                      >
+                        <p className="text-[13px] font-semibold text-[#92400E] leading-snug">
+                          Complete your delivery details
+                        </p>
+                        <p className="text-[12px] text-[#B45309] leading-relaxed">
+                          {incompleteMessage}
+                        </p>
+                        <button
+                          id="cart-complete-profile-btn"
+                          type="button"
+                          onClick={() => {
+                            closeDrawer();
+                            navigate('/profile');
+                          }}
+                          className="flex items-center gap-1.5 text-[13px] font-bold text-[#92400E] hover:text-[#78350F] transition-colors self-start cursor-pointer underline underline-offset-2"
+                        >
+                          <UserCircle size={15} />
+                          Complete Profile
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Guest login prompt banner */}
+                  <AnimatePresence>
+                    {loginPrompt && !user && (
+                      <motion.div
+                        key="login-banner"
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.22 }}
+                        className="flex flex-col gap-2 px-4 py-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[12px]"
+                        role="alert"
+                        aria-live="assertive"
+                      >
+                        <p className="text-[13px] font-semibold text-[#DC2626] leading-snug">
+                          Please log in to continue
+                        </p>
+                        <p className="text-[12px] text-[#3B5F8A] leading-relaxed">
+                          Sign in to add your contact and delivery details before requesting a quote.
+                        </p>
+                        <button
+                          id="cart-login-btn"
+                          type="button"
+                          onClick={() => {
+                            closeDrawer();
+                            navigate('/login');
+                          }}
+                          className="flex items-center gap-1.5 text-[13px] font-bold text-[#1D4ED8] hover:text-[#1E40AF] transition-colors self-start cursor-pointer underline underline-offset-2"
+                        >
+                          <LogIn size={15} />
+                          Log In
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   {/* Primary: Request Quote on WhatsApp */}
                   <button
                     type="button"
+                    id="cart-request-quote-btn"
                     onClick={handleRequestQuote}
-                    className="w-full h-[46px] rounded-[12px] bg-[#25D366] text-[#FFFFFF] text-[15px] font-bold hover:bg-[#1DA851] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2.5 cursor-pointer"
+                    disabled={user && detailsLoading}
+                    className="w-full h-[46px] rounded-[12px] bg-[#25D366] text-[#FFFFFF] text-[15px] font-bold hover:bg-[#1DA851] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-70 disabled:cursor-wait"
                   >
-                    <WhatsAppIcon size={20} className="shrink-0" />
-                    <span>Request Quote on WhatsApp</span>
+                    {user && detailsLoading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin shrink-0" />
+                        <span>Loading your details…</span>
+                      </>
+                    ) : (
+                      <>
+                        <WhatsAppIcon size={20} className="shrink-0" />
+                        <span>Request Quote on WhatsApp</span>
+                      </>
+                    )}
                   </button>
 
                   {/* Secondary: Continue Shopping */}
