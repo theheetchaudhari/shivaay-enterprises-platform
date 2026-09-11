@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   Package,
+  Users,
   LogOut,
   X,
   ShieldCheck,
@@ -22,6 +23,12 @@ const navItems = [
     to: '/admin/products',
     icon: Package,
     id: 'sidebar-nav-products',
+  },
+  {
+    label: 'Customers',
+    to: '/admin/customers',
+    icon: Users,
+    id: 'sidebar-nav-customers',
   },
 ];
 

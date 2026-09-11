@@ -5,6 +5,8 @@ import './index.css'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
+import AdminCustomers from './pages/admin/AdminCustomers'
+import AdminCustomerDetail from './pages/admin/AdminCustomerDetail'
 import AdminProtectedRoute from './components/auth/AdminProtectedRoute'
 
 createRoot(document.getElementById('root')).render(
@@ -29,6 +31,22 @@ createRoot(document.getElementById('root')).render(
           element={
             <AdminProtectedRoute>
               <AdminProducts />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/customers"
+          element={
+            <AdminProtectedRoute>
+              <AdminCustomers />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/customers/:id"
+          element={
+            <AdminProtectedRoute>
+              <AdminCustomerDetail />
             </AdminProtectedRoute>
           }
         />
