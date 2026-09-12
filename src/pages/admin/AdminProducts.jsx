@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   UploadCloud,
   Pencil,
+  Search,
 } from 'lucide-react';
 import AdminLayout from '../../layouts/AdminLayout';
 import { supabase } from '../../lib/supabase';
@@ -258,10 +259,37 @@ function EmptyState({ onAdd }) {
   );
 }
 
+// ─── Sub-component: Search Empty State ────────────────────────────────────────
+function SearchEmptyState({ searchQuery, onClear }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col items-center justify-center py-20 text-center"
+    >
+      <div className="w-20 h-20 rounded-[20px] bg-[#F1F5F9] flex items-center justify-center mb-5">
+        <Search size={36} className="text-[#CBD5E1]" />
+      </div>
+      <h3 className="text-[17px] font-bold text-[#0F172A] mb-2">No results found</h3>
+      <p className="text-[14px] text-[#6B7280] mb-6 max-w-sm mx-auto">
+        We couldn't find any products matching "{searchQuery}". Try checking for typos or using different keywords.
+      </p>
+      <button
+        onClick={onClear}
+        className="text-[14px] font-semibold text-[#0F172A] hover:text-[#334155] underline underline-offset-4"
+      >
+        Clear search
+      </button>
+    </motion.div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 const AdminProducts = () => {
   // ── State ──
   const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
@@ -559,6 +587,16 @@ const AdminProducts = () => {
     }
   };
 
+  // ── Derived State ─────────────────────────────────────────────────────────
+  const filteredProducts = products.filter(product => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase().trim();
+    return (
+      (product.name && product.name.toLowerCase().includes(query)) ||
+      (product.description && product.description.toLowerCase().includes(query))
+    );
+  });
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <AdminLayout pageTitle="Products">
@@ -580,24 +618,39 @@ const AdminProducts = () => {
             Products
             {!fetchLoading && (
               <span className="ml-2 text-[15px] font-medium text-[#6B7280]">
-                ({products.length})
+                ({filteredProducts.length}{searchQuery ? ` of ${products.length}` : ''})
               </span>
             )}
           </h2>
         </div>
 
-        {!showForm && (
-          <motion.button
-            id="add-product-btn"
-            whileHover={{ scale: 1.02, y: -1 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleOpenForm}
-            className="flex items-center gap-2 bg-[#0F172A] text-white px-5 py-2.5 rounded-[12px] text-[15px] font-semibold hover:bg-[#1e293b] transition-all duration-200 shadow-sm shrink-0 self-start sm:self-auto"
-          >
-            <Plus size={18} />
-            Add Product
-          </motion.button>
-        )}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {!showForm && products.length > 0 && (
+            <div className="relative">
+              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-64 h-10 pl-10 pr-4 bg-white border border-[#E5E7EB] rounded-[12px] text-[14px] text-[#0F172A] placeholder-[#9CA3AF] focus:outline-none focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] transition-colors shadow-sm"
+              />
+            </div>
+          )}
+
+          {!showForm && (
+            <motion.button
+              id="add-product-btn"
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={handleOpenForm}
+              className="flex items-center justify-center gap-2 bg-[#0F172A] text-white px-5 h-10 rounded-[12px] text-[14px] font-semibold hover:bg-[#1e293b] transition-all duration-200 shadow-sm shrink-0"
+            >
+              <Plus size={18} />
+              Add Product
+            </motion.button>
+          )}
+        </div>
       </motion.div>
 
       {/* Add Product Form */}
@@ -869,12 +922,16 @@ const AdminProducts = () => {
         <EmptyState onAdd={handleOpenForm} />
       )}
 
-      {!fetchLoading && !fetchError && products.length > 0 && (
+      {!fetchLoading && !fetchError && products.length > 0 && filteredProducts.length === 0 && (
+        <SearchEmptyState searchQuery={searchQuery} onClear={() => setSearchQuery('')} />
+      )}
+
+      {!fetchLoading && !fetchError && filteredProducts.length > 0 && (
         <div
           id="products-grid"
           className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5"
         >
-          {products.map((product, i) => (
+          {filteredProducts.map((product, i) => (
             <ProductCard
               key={product.id}
               product={product}

@@ -221,6 +221,27 @@ function EmptyState() {
   );
 }
 
+// ─── Search Empty state ───────────────────────────────────────────────────────
+function SearchEmptyState({ searchQuery, onClear }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center px-4">
+      <div className="w-16 h-16 rounded-[20px] bg-[#F1F5F9] flex items-center justify-center mb-5">
+        <Search size={30} className="text-[#94A3B8]" />
+      </div>
+      <p className="text-[16px] font-bold text-[#0F172A] mb-2">No results found</p>
+      <p className="text-[13px] text-[#64748B] mb-5 max-w-[300px]">
+        We couldn't find any customers matching "{searchQuery}".
+      </p>
+      <button
+        onClick={onClear}
+        className="text-[13px] font-semibold text-[#0F172A] hover:text-[#334155] underline underline-offset-4"
+      >
+        Clear search
+      </button>
+    </div>
+  );
+}
+
 // ─── Error state ──────────────────────────────────────────────────────────────
 function ErrorState({ onRetry }) {
   return (
@@ -248,6 +269,7 @@ const ITEMS_PER_PAGE = 10;
 const AdminCustomers = () => {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -290,6 +312,17 @@ const AdminCustomers = () => {
   const handleView = (id) => navigate(`/admin/customers/${id}`);
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  // ── Derived State ─────────────────────────────────────────────────────────
+  const filteredCustomers = customers.filter(customer => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase().trim();
+    return (
+      (customer.full_name && customer.full_name.toLowerCase().includes(query)) ||
+      (customer.email && customer.email.toLowerCase().includes(query)) ||
+      (customer.phone && customer.phone.toLowerCase().includes(query))
+    );
+  });
+
   return (
     <AdminLayout pageTitle="Customers">
       {/* Page header */}
@@ -310,10 +343,18 @@ const AdminCustomers = () => {
               {loading ? 'Loading…' : `${totalCount} registered customer${totalCount !== 1 ? 's' : ''}`}
             </p>
           </div>
-          <div className="flex items-center gap-2 text-[13px] text-[#6B7280] bg-white border border-[#E5E7EB] rounded-[10px] px-3 py-2 shadow-sm">
-            <Search size={14} className="text-[#94A3B8]" />
-            <span>Search coming soon</span>
-          </div>
+          {customers.length > 0 && (
+            <div className="relative w-full sm:w-64">
+              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+              <input
+                type="text"
+                placeholder="Search customers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-10 pl-10 pr-4 bg-white border border-[#E5E7EB] rounded-[12px] text-[14px] text-[#0F172A] placeholder-[#9CA3AF] focus:outline-none focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] transition-colors shadow-sm"
+              />
+            </div>
+          )}
         </div>
       </motion.div>
 
@@ -364,6 +405,8 @@ const AdminCustomers = () => {
           <ErrorState onRetry={fetchCustomers} />
         ) : customers.length === 0 ? (
           <EmptyState />
+        ) : filteredCustomers.length === 0 ? (
+          <SearchEmptyState searchQuery={searchQuery} onClear={() => setSearchQuery('')} />
         ) : (
           <>
             {/* Desktop table — hidden on small screens */}
@@ -392,7 +435,7 @@ const AdminCustomers = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#F1F5F9]">
-                  {customers.map((cust) => (
+                  {filteredCustomers.map((cust) => (
                     <CustomerTableRow key={cust.id} customer={cust} onView={handleView} />
                   ))}
                 </tbody>
@@ -401,7 +444,7 @@ const AdminCustomers = () => {
 
             {/* Mobile card list — shown only on small screens */}
             <div className="sm:hidden p-4 space-y-3">
-              {customers.map((cust, i) => (
+              {filteredCustomers.map((cust, i) => (
                 <CustomerCard key={cust.id} customer={cust} index={i} onView={handleView} />
               ))}
             </div>
