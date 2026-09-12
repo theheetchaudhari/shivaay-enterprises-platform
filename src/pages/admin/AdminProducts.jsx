@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Package,
@@ -8,8 +8,6 @@ import {
   AlertCircle,
   Loader2,
   Tag,
-  Link2,
-  AlignLeft,
   DollarSign,
   ToggleRight,
   ToggleLeft,
@@ -162,7 +160,7 @@ function ProductCard({ product, index, onEdit, onDelete }) {
       className="bg-white rounded-[16px] border border-[#E5E7EB] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col"
     >
       {/* Product image */}
-      <div className="relative h-44 bg-[#F1F5F9] flex items-center justify-center overflow-hidden">
+      <div className="relative h-36 sm:h-44 bg-[#F1F5F9] flex items-center justify-center overflow-hidden">
         {product.image_url && !imgError ? (
           <img
             src={product.image_url}
@@ -172,13 +170,13 @@ function ProductCard({ product, index, onEdit, onDelete }) {
           />
         ) : (
           <div className="flex flex-col items-center gap-2 text-[#9CA3AF]">
-            <ImageOff size={32} />
-            <span className="text-[12px]">No image</span>
+            <ImageOff size={28} className="sm:w-8 sm:h-8" />
+            <span className="text-[11px] sm:text-[12px]">No image</span>
           </div>
         )}
         {/* Active badge */}
         <span
-          className={`absolute top-3 right-3 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+          className={`absolute top-2 right-2 sm:top-3 sm:right-3 text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full ${
             product.is_active
               ? 'bg-[#DCFCE7] text-[#16A34A]'
               : 'bg-[#F1F5F9] text-[#6B7280]'
@@ -189,40 +187,40 @@ function ProductCard({ product, index, onEdit, onDelete }) {
       </div>
 
       {/* Product info */}
-      <div className="p-4 sm:p-5 flex flex-col gap-2 flex-1">
-        <h3 className="text-[15px] font-bold text-[#0F172A] leading-snug line-clamp-2">
+      <div className="p-3 sm:p-5 flex flex-col gap-1.5 sm:gap-2 flex-1">
+        <h3 className="text-[13px] sm:text-[15px] font-bold text-[#0F172A] leading-snug line-clamp-2">
           {product.name}
         </h3>
         {product.description && (
-          <p className="text-[13px] text-[#6B7280] leading-relaxed line-clamp-3">
+          <p className="text-[12px] sm:text-[13px] text-[#6B7280] leading-relaxed line-clamp-2 sm:line-clamp-3">
             {product.description}
           </p>
         )}
-        <div className="mt-auto pt-3 border-t border-[#F1F5F9] flex items-center justify-between gap-2">
-          <span className="text-[17px] font-bold text-[#0F172A] shrink-0">
+        <div className="mt-auto pt-2.5 sm:pt-3 border-t border-[#F1F5F9] flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-2">
+          <span className="text-[14px] sm:text-[17px] font-bold text-[#0F172A] shrink-0">
             {'\u20B9'}{Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 self-end min-[480px]:self-auto">
             {/* Edit button */}
             <button
               id={`edit-product-btn-${product.id}`}
               onClick={() => onEdit(product)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] text-[12px] font-semibold text-[#374151] hover:bg-[#F1F5F9] hover:text-[#0F172A] border border-[#E5E7EB] hover:border-[#CBD5E1] transition-all duration-200"
+              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-[8px] sm:rounded-[10px] text-[11px] sm:text-[12px] font-semibold text-[#374151] hover:bg-[#F1F5F9] hover:text-[#0F172A] border border-[#E5E7EB] hover:border-[#CBD5E1] transition-all duration-200"
               title="Edit product"
               aria-label={`Edit ${product.name}`}
             >
-              <Pencil size={13} />
+              <Pencil size={12} className="sm:w-[13px] sm:h-[13px]" />
               Edit
             </button>
             {/* Delete button */}
             <button
               id={`delete-product-btn-${product.id}`}
               onClick={() => onDelete(product)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] text-[12px] font-semibold text-[#6B7280] hover:bg-[#FEF2F2] hover:text-[#DC2626] border border-transparent hover:border-[#FECACA] transition-all duration-200"
+              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-[8px] sm:rounded-[10px] text-[11px] sm:text-[12px] font-semibold text-[#6B7280] hover:bg-[#FEF2F2] hover:text-[#DC2626] border border-transparent hover:border-[#FECACA] transition-all duration-200"
               title="Delete product"
               aria-label={`Delete ${product.name}`}
             >
-              <Trash2 size={13} />
+              <Trash2 size={12} className="sm:w-[13px] sm:h-[13px]" />
               Delete
             </button>
           </div>
@@ -305,6 +303,7 @@ const AdminProducts = () => {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
   }, [fetchProducts]);
 
@@ -873,7 +872,7 @@ const AdminProducts = () => {
       {!fetchLoading && !fetchError && products.length > 0 && (
         <div
           id="products-grid"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5"
         >
           {products.map((product, i) => (
             <ProductCard
