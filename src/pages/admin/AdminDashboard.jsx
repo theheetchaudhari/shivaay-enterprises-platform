@@ -23,7 +23,7 @@ const fadeUp = {
   }),
 };
 
-// ─── Quick-action cards (placeholders) ───────────────────────────────────────
+// ─── Quick-action cards (navigation & placeholders) ─────────────────────────
 const quickActions = [
   {
     id: 'qa-products',
@@ -31,6 +31,7 @@ const quickActions = [
     description: 'Add, edit, or remove products from your catalogue.',
     icon: Package,
     tag: 'Active',
+    path: '/admin/products',
   },
   {
     id: 'qa-analytics',
@@ -45,6 +46,7 @@ const quickActions = [
     description: 'Browse and manage your registered customers.',
     icon: Users,
     tag: 'Active',
+    path: '/admin/customers',
   },
 ];
 
@@ -68,14 +70,16 @@ function StatCard({ card, index }) {
       <div>
         <p className="text-[13px] text-[#6B7280] font-medium mb-1">{card.label}</p>
         <p className="text-[32px] font-bold text-[#0F172A] leading-none">{card.value}</p>
-        <p className="text-[12px] text-[#9CA3AF] mt-2">{card.note}</p>
+        <p className="hidden sm:block text-[12px] text-[#9CA3AF] mt-2">{card.note}</p>
       </div>
     </motion.div>
   );
 }
 
-function QuickActionCard({ card, index }) {
+function QuickActionCard({ card, index, onNavigate }) {
   const Icon = card.icon;
+  const isClickable = Boolean(card.path);
+
   return (
     <motion.div
       id={card.id}
@@ -83,18 +87,67 @@ function QuickActionCard({ card, index }) {
       custom={index + 4} // adjust index for staggered animation
       initial="hidden"
       animate="visible"
-      className="bg-white rounded-[16px] border border-[#E5E7EB] p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-default"
+      onClick={() => {
+        if (isClickable && onNavigate) {
+          onNavigate(card.path);
+        }
+      }}
+      role={isClickable ? 'button' : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      aria-label={isClickable ? `Navigate to ${card.title}` : undefined}
+      onKeyDown={(e) => {
+        if (isClickable && onNavigate && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onNavigate(card.path);
+        }
+      }}
+      className={`bg-white rounded-[16px] border border-[#E5E7EB] p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group ${
+        isClickable
+          ? 'cursor-pointer hover:border-[#0F172A]/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A]'
+          : 'cursor-default'
+      }`}
     >
       <div className="flex items-start justify-between mb-3">
-        <div className="w-10 h-10 rounded-[10px] bg-[#F1F5F9] flex items-center justify-center">
-          <Icon size={20} className="text-[#0F172A]" />
+        <div
+          className={`w-10 h-10 rounded-[10px] bg-[#F1F5F9] flex items-center justify-center ${
+            isClickable ? 'group-hover:bg-[#0F172A] transition-colors duration-200' : ''
+          }`}
+        >
+          <Icon
+            size={20}
+            className={`text-[#0F172A] ${
+              isClickable ? 'group-hover:text-white transition-colors duration-200' : ''
+            }`}
+          />
         </div>
-        <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${card.tag === 'Active' ? 'bg-[#DCFCE7] text-[#16A34A]' : 'bg-[#F1F5F9] text-[#6B7280]'}`}>
-          {card.tag}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span
+            className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+              card.tag === 'Active'
+                ? 'bg-[#DCFCE7] text-[#16A34A]'
+                : 'bg-[#F1F5F9] text-[#6B7280]'
+            }`}
+          >
+            {card.tag}
+          </span>
+          {isClickable && (
+            <ArrowRight
+              size={14}
+              className="text-[#94A3B8] group-hover:text-[#0F172A] group-hover:translate-x-0.5 transition-all"
+            />
+          )}
+        </div>
       </div>
-      <h3 className="text-[15px] font-bold text-[#0F172A] mb-1">{card.title}</h3>
-      <p className="text-[13px] text-[#6B7280] leading-relaxed">{card.description}</p>
+      <h3
+        className={`text-[15px] font-bold text-[#0F172A] mb-1 ${
+          isClickable ? 'group-hover:text-[#DC2626] transition-colors' : ''
+        }`}
+      >
+        {card.title}
+      </h3>
+      <p className="hidden sm:block text-[13px] text-[#6B7280] leading-relaxed">
+        {card.description}
+      </p>
     </motion.div>
   );
 }
@@ -223,7 +276,7 @@ const AdminDashboard = () => {
             Admin Portal
           </p>
           <h2 className="text-[26px] sm:text-[30px] font-heading font-bold text-white leading-tight mb-2">
-            Welcome back, Admin 👋
+            Welcome back, Admin 
           </h2>
           <p className="text-[14px] sm:text-[15px] text-[#94a3b8] max-w-[500px] leading-relaxed">
             You're signed in to the Shivaay Enterprises admin panel. Use the sidebar
@@ -234,7 +287,7 @@ const AdminDashboard = () => {
         <div className="relative shrink-0">
           <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-[12px] px-4 py-2.5 text-white text-[13px] font-medium">
             <ArrowUpRight size={16} className="text-[#DC2626]" />
-            Panel v2.0
+            Panel v2.1
           </div>
         </div>
       </motion.div>
@@ -250,7 +303,11 @@ const AdminDashboard = () => {
         >
           Overview
         </motion.p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div
+          className={`grid ${
+            dynamicStatCards.length % 2 !== 0 ? 'grid-cols-3' : 'grid-cols-2'
+          } sm:grid-cols-2 xl:grid-cols-3 gap-4`}
+        >
           {dynamicStatCards.map((card, i) => (
             <StatCard key={card.id} card={card} index={i + 2} />
           ))}
@@ -268,9 +325,18 @@ const AdminDashboard = () => {
         >
           Quick Actions
         </motion.p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          className={`grid ${
+            quickActions.length % 2 !== 0 ? 'grid-cols-3' : 'grid-cols-2'
+          } sm:grid-cols-2 lg:grid-cols-3 gap-4`}
+        >
           {quickActions.map((card, i) => (
-            <QuickActionCard key={card.id} card={card} index={i} />
+            <QuickActionCard
+              key={card.id}
+              card={card}
+              index={i}
+              onNavigate={navigate}
+            />
           ))}
         </div>
       </div>
