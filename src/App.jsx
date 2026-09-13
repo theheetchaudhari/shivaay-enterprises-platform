@@ -12,6 +12,10 @@ import Login from './pages/Login';
 import About from './pages/About';
 import AuthCallback from './pages/AuthCallback';
 import Profile from './pages/Profile';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import TermsConditions from './pages/legal/TermsConditions';
+import ContactGrievance from './pages/legal/ContactGrievance';
+import AccessibilityStatement from './pages/legal/AccessibilityStatement';
 import CustomerProtectedRoute from './components/auth/CustomerProtectedRoute';
 import CartDrawer from './components/cart/CartDrawer';
 import { CartProvider } from './context/CartContext';
@@ -55,6 +59,10 @@ function App() {
           <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
           <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
           <Route path="/profile" element={<CustomerProtectedRoute><PublicLayout><Profile /></PublicLayout></CustomerProtectedRoute>} />
+          <Route path="/privacy-policy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
+          <Route path="/terms-conditions" element={<PublicLayout><TermsConditions /></PublicLayout>} />
+          <Route path="/contact-grievance" element={<PublicLayout><ContactGrievance /></PublicLayout>} />
+          <Route path="/accessibility-statement" element={<PublicLayout><AccessibilityStatement /></PublicLayout>} />
           {/* OAuth callback — bare page, no PublicLayout wrapper */}
           <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
