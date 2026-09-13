@@ -104,17 +104,43 @@ const CompanyColumn = () => (
   </motion.div>
 );
 
-// --- Services Column ---
-
-const ServicesColumn = () => (
+// --- Legal Column ---
+const LegalColumn = () => (
   <motion.div {...fadeUp(0.14)}>
-    <FooterHeading>Services</FooterHeading>
+    <FooterHeading>Legal</FooterHeading>
     <ul className="flex flex-col gap-[10px]">
-      {footerData.services.map((service) => (
-        <li key={service} className="text-[#94A3B8] text-[15px] leading-[1.5]">
-          {service}
-        </li>
-      ))}
+      <li>
+        <NavLink
+          to="/privacy-policy"
+          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
+        >
+          Privacy Policy
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/terms-conditions"
+          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
+        >
+          Terms &amp; Conditions
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/contact-grievance"
+          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
+        >
+          Contact &amp; Grievance
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/accessibility-statement"
+          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
+        >
+          Accessibility Statement
+        </NavLink>
+      </li>
     </ul>
   </motion.div>
 );
@@ -200,7 +226,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.8fr] gap-10 md:gap-12 lg:gap-8">
           <BrandColumn />
           <CompanyColumn />
-          <ServicesColumn />
+          <LegalColumn />
           <ContactColumn />
         </div>
         <BottomBar />
