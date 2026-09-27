@@ -6,7 +6,7 @@ import { Phone, Mail, MapPin } from 'lucide-react';
 // --- Editable Footer Data ---
 
 const GOOGLE_MAPS_EMBED_URL =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4196.517149492455!2d73.03427529999999!3d21.6337032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be023d67e697f5b%3A0x68d57c0a70000000!2sSHIVAAY%20ENTERPRISES!5e1!3m2!1sen!2sin!4v1786277787051!5m2!1sen!2sin';
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4196.517149492455!2d73.03427529999999!3d21.6337032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be023d67e697f5b%3A0x68d57c0a70000000!2sSHIVAAY%20ENTERPRISES!5e0!3m2!1sen!2sin!4v1786277787051!5m2!1sen!2sin';
 
 const footerData = {
   brand: {

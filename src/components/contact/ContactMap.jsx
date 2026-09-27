@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { MapPin, Navigation, ArrowUpRight } from 'lucide-react';
 
 const GOOGLE_MAPS_EMBED_URL =
-  'https://www.google.com/maps?q=New%20Mangaldeep%20Society%20A-326%2C%20Rajpipla%20Rd%2C%20Udhyagnagar%2C%20Hifazat%20Nagar%2C%20Ankleshwar%2C%20Bharuch%2C%20Gujarat%20-%20393002%2C%20India&output=embed';
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4196.517149492455!2d73.03427529999999!3d21.6337032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be023d67e697f5b%3A0x68d57c0a70000000!2sSHIVAAY%20ENTERPRISES!5e0!3m2!1sen!2sin!4v1786277787051!5m2!1sen!2sin';
 
 const GOOGLE_MAPS_EXTERNAL_URL =
-  'https://www.google.com/maps/search/?api=1&query=New+Mangaldeep+Society+A-326%2C+Rajpipla+Rd%2C+Udhyagnagar%2C+Hifazat+Nagar%2C+Ankleshwar%2C+Bharuch%2C+Gujarat+-+393002%2C+India';
+  'https://www.google.com/maps/place/SHIVAAY+ENTERPRISES/@21.6337032,73.0342753,17z/data=!3m1!4b1!4m6!3m5!1s0x3be023d67e697f5b:0x68d57c0a70000000!8m2!3d21.6337032!4d73.0342753!16s%2Fg%2F11w7v8r_90';
 
 const ADDRESS_TEXT =
   'New Mangaldeep Society A-326, Rajpipla Rd, Udhyagnagar, Hifazat Nagar, Ankleshwar, Bharuch, Gujarat - 393002, India';
