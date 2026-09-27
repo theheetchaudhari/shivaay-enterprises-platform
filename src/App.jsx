@@ -10,6 +10,7 @@ import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import About from './pages/About';
+import Services from './pages/Services';
 import AuthCallback from './pages/AuthCallback';
 import Profile from './pages/Profile';
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
@@ -57,6 +58,7 @@ function App() {
           <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
           <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+          <Route path="/services" element={<PublicLayout><Services /></PublicLayout>} />
           <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
           <Route path="/profile" element={<CustomerProtectedRoute><PublicLayout><Profile /></PublicLayout></CustomerProtectedRoute>} />
           <Route path="/privacy-policy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
