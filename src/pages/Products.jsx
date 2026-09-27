@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Loader2, AlertCircle, ImageOff, Search, X, ArrowUpRight, ShoppingCart, Check } from 'lucide-react';
+import { Package, Loader2, AlertCircle, ImageOff, Search, X, Check, Minus, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { publicSupabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
@@ -8,8 +8,7 @@ import { useCart } from '../context/CartContext';
 // ─── Product Card Component ───────────────────────────────────────────────────
 function ProductCard({ product, index }) {
   const [imgError, setImgError] = useState(false);
-  const [addedFeedback, setAddedFeedback] = useState(false);
-  const { addToCart, isInCart, openDrawer } = useCart();
+  const { addToCart, updateQty, removeFromCart, getItemQty } = useCart();
 
   const hasImage = product.image_url && !imgError;
   const formattedPrice =
@@ -19,14 +18,13 @@ function ProductCard({ product, index }) {
       })}`
       : null;
 
-  const inCart = isInCart(product.id);
+  const cartQty = getItemQty(product.id);
+  const inCart = cartQty > 0;
 
   const handleAddToCart = (e) => {
     e.preventDefault(); // prevent Link navigation
     e.stopPropagation();
     addToCart(product);
-    setAddedFeedback(true);
-    setTimeout(() => setAddedFeedback(false), 1800);
   };
 
   return (
@@ -94,7 +92,7 @@ function ProductCard({ product, index }) {
           </div>
 
           {/* Price & Action Row */}
-          <div className="pt-2 border-t border-[#F8FAFC] flex items-center justify-between gap-2 mt-auto">
+          <div className="pt-2.5 border-t border-[#F1F5F9] flex items-center justify-between gap-2 mt-auto">
             <div>
               {formattedPrice ? (
                 <span className="text-[13px] sm:text-[15px] md:text-[16px] font-extrabold text-[#0F172A] tracking-tight">
@@ -107,44 +105,61 @@ function ProductCard({ product, index }) {
               )}
             </div>
 
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center text-[#64748B] group-hover:bg-[#0F172A] group-hover:border-[#0F172A] group-hover:text-[#FFFFFF] transition-all duration-200 shrink-0">
-              <ArrowUpRight size={14} className="sm:w-4 sm:h-4" />
-            </div>
+            {/* Green Add to Cart / Quantity Stepper aligned with price */}
+            {cartQty > 0 ? (
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                className="h-7 sm:h-8 px-0.5 rounded-[8px] bg-[#16A34A] text-[#FFFFFF] border border-[#16A34A] flex items-center shadow-xs overflow-hidden shrink-0"
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (cartQty <= 1) {
+                      removeFromCart(product.id);
+                    } else {
+                      updateQty(product.id, cartQty - 1);
+                    }
+                  }}
+                  aria-label={`Decrease quantity of ${product.name || 'product'}`}
+                  className="w-6 sm:w-7 h-full flex items-center justify-center text-white/90 hover:text-white hover:bg-[#15803D] active:scale-90 transition-colors cursor-pointer"
+                >
+                  <Minus size={13} strokeWidth={2.5} />
+                </button>
+                <span className="w-6 sm:w-7 text-center text-[12px] sm:text-[13px] font-bold text-white select-none">
+                  {cartQty}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateQty(product.id, cartQty + 1);
+                  }}
+                  aria-label={`Increase quantity of ${product.name || 'product'}`}
+                  className="w-6 sm:w-7 h-full flex items-center justify-center text-white/90 hover:text-white hover:bg-[#15803D] active:scale-90 transition-colors cursor-pointer"
+                >
+                  <Plus size={13} strokeWidth={2.5} />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                aria-label={`Add ${product.name || 'product'} to cart`}
+                className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-[8px] text-[11px] sm:text-[12px] font-bold bg-[#FFFFFF] text-[#16A34A] border border-[#16A34A] hover:bg-[#F0FDF4] active:scale-95 transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer shrink-0"
+              >
+                <Plus size={13} strokeWidth={2.5} />
+                <span>ADD</span>
+              </button>
+            )}
           </div>
         </div>
       </Link>
-
-      {/* Add to Cart Button — sits outside the Link to prevent navigation */}
-      <div className="px-3 pb-3 sm:px-4 sm:pb-4">
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          aria-label={`Add ${product.name || 'product'} to cart`}
-          className={`w-full h-[34px] sm:h-[38px] rounded-[10px] text-[12px] sm:text-[13px] font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${addedFeedback
-              ? 'bg-[#16A34A] text-[#FFFFFF]'
-              : inCart
-                ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A] hover:bg-[#DCFCE7]'
-                : 'bg-[#0F172A] text-[#FFFFFF] hover:bg-[#1E293B]'
-            }`}
-        >
-          {addedFeedback ? (
-            <>
-              <Check size={14} />
-              <span>Added!</span>
-            </>
-          ) : inCart ? (
-            <>
-              <ShoppingCart size={13} />
-              <span>Add Again</span>
-            </>
-          ) : (
-            <>
-              <ShoppingCart size={13} />
-              <span>Add to Cart</span>
-            </>
-          )}
-        </button>
-      </div>
     </motion.div>
   );
 }
