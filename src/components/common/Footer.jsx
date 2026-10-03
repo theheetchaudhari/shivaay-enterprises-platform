@@ -15,10 +15,17 @@ const footerData = {
     values: ['Purity', 'Quality', 'Trust'],
   },
   company: [
+    { label: 'Home', path: '/' },
     { label: 'About Us', path: '/about' },
     { label: 'Our Services', path: '/services' },
     { label: 'Our Products', path: '/products' },
     { label: 'Contact Us', path: '/contact' },
+  ],
+  legal: [
+    { label: 'Privacy Policy', path: '/privacy-policy' },
+    { label: 'Terms & Conditions', path: '/terms-conditions' },
+    { label: 'Contact & Grievance', path: '/contact-grievance' },
+    { label: 'Accessibility Statement', path: '/accessibility-statement' },
   ],
   services: [
     'Wholesale Supply',
@@ -51,6 +58,24 @@ const FooterHeading = ({ children }) => (
     {children}
     <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-[#DC2626] rounded-full" />
   </h3>
+);
+
+// --- Footer NavLink with Active Highlight ---
+
+const FooterNavLink = ({ to, end = false, children }) => (
+  <NavLink
+    to={to}
+    end={end}
+    className={({ isActive }) =>
+      `text-[15px] leading-[1.5] transition-colors duration-200 ${
+        isActive
+          ? 'text-[#DC2626] font-semibold'
+          : 'text-[#94A3B8] hover:text-[#DC2626]'
+      }`
+    }
+  >
+    {children}
+  </NavLink>
 );
 
 // --- Brand Column ---
@@ -92,12 +117,9 @@ const CompanyColumn = () => (
     <ul className="flex flex-col gap-[10px]">
       {footerData.company.map(({ label, path }) => (
         <li key={label}>
-          <NavLink
-            to={path}
-            className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200 leading-[1.5]"
-          >
+          <FooterNavLink to={path} end={path === '/'}>
             {label}
-          </NavLink>
+          </FooterNavLink>
         </li>
       ))}
     </ul>
@@ -109,38 +131,13 @@ const LegalColumn = () => (
   <motion.div {...fadeUp(0.14)}>
     <FooterHeading>Legal</FooterHeading>
     <ul className="flex flex-col gap-[10px]">
-      <li>
-        <NavLink
-          to="/privacy-policy"
-          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
-        >
-          Privacy Policy
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/terms-conditions"
-          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
-        >
-          Terms &amp; Conditions
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/contact-grievance"
-          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
-        >
-          Contact &amp; Grievance
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/accessibility-statement"
-          className="text-[#94A3B8] text-[15px] hover:text-[#DC2626] transition-colors duration-200"
-        >
-          Accessibility Statement
-        </NavLink>
-      </li>
+      {footerData.legal.map(({ label, path }) => (
+        <li key={label}>
+          <FooterNavLink to={path} end={path === '/'}>
+            {label}
+          </FooterNavLink>
+        </li>
+      ))}
     </ul>
   </motion.div>
 );
