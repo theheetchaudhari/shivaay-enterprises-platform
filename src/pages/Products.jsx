@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Loader2, AlertCircle, ImageOff, Search, X, Check, Minus, Plus } from 'lucide-react';
+import { Package, AlertCircle, ImageOff, Search, X, Check, Minus, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { publicSupabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 
@@ -164,20 +166,69 @@ function ProductCard({ product, index }) {
   );
 }
 
-// ─── Loading State ────────────────────────────────────────────────────────────
-function LoadingState() {
+// ─── Skeleton Screen Components ──────────────────────────────────────────────
+function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 md:py-32">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-      >
-        <Loader2 size={32} className="text-[#DC2626]" />
-      </motion.div>
-      <p className="mt-4 text-[14px] sm:text-[15px] text-[#64748B] font-medium">
-        Loading product catalogue…
-      </p>
+    <div className="bg-[#FFFFFF] rounded-[14px] sm:rounded-[16px] border border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col overflow-hidden">
+      {/* Product Image Area */}
+      <div className="relative aspect-square w-full bg-[#F8FAFC] border-b border-[#F1F5F9] p-3 sm:p-4 flex items-center justify-center">
+        {/* Category Badge skeleton */}
+        <div className="absolute top-2.5 left-2.5 z-10">
+          <Skeleton width={60} height={18} borderRadius={9999} />
+        </div>
+        {/* Centered Image placeholder */}
+        <div className="w-full h-full flex items-center justify-center p-2">
+          <Skeleton
+            width={120}
+            height={120}
+            borderRadius={16}
+            className="max-w-full max-h-full"
+          />
+        </div>
+      </div>
+
+      {/* Product Info Section */}
+      <div className="p-3 sm:p-4 md:p-4 flex flex-col flex-1 justify-between gap-3">
+        <div>
+          {/* Title lines */}
+          <Skeleton width="88%" height={16} borderRadius={6} />
+          <div className="mt-1.5">
+            <Skeleton width="60%" height={14} borderRadius={6} />
+          </div>
+
+          {/* Description lines (desktop) */}
+          <div className="hidden sm:block mt-2.5 space-y-1">
+            <Skeleton width="100%" height={11} borderRadius={4} />
+            <Skeleton width="75%" height={11} borderRadius={4} />
+          </div>
+        </div>
+
+        {/* Price & Action Row */}
+        <div className="pt-2.5 border-t border-[#F1F5F9] flex items-center justify-between gap-2 mt-auto">
+          {/* Price */}
+          <Skeleton width={68} height={20} borderRadius={6} />
+          {/* Add button */}
+          <Skeleton width={58} height={30} borderRadius={8} />
+        </div>
+      </div>
     </div>
+  );
+}
+
+function ProductsSkeleton() {
+  return (
+    <SkeletonTheme baseColor="#E2E8F0" highlightColor="#F8FAFC">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <Skeleton width={120} height={16} borderRadius={6} />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </SkeletonTheme>
   );
 }
 
@@ -293,6 +344,14 @@ const Products = () => {
             </p>
           </motion.div>
 
+          {loading && (
+            <div className="w-full md:w-80 shrink-0">
+              <SkeletonTheme baseColor="#E2E8F0" highlightColor="#F8FAFC">
+                <Skeleton height={44} borderRadius={12} />
+              </SkeletonTheme>
+            </div>
+          )}
+
           {!loading && !error && products.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -328,7 +387,7 @@ const Products = () => {
         </div>
 
         {/* State Displays */}
-        {loading && <LoadingState />}
+        {loading && <ProductsSkeleton />}
         {!loading && error && <ErrorState message={error} onRetry={fetchProducts} />}
         {!loading && !error && products.length === 0 && <EmptyState />}
 

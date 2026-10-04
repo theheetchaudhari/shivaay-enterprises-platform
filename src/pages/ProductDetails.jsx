@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import {
-  Loader2,
   AlertCircle,
   ImageOff,
   Package,
@@ -11,7 +12,6 @@ import {
   Truck,
   ShieldCheck,
   CheckCircle2,
-  PhoneCall,
   MessageSquare,
   Sparkles,
   ChevronRight,
@@ -29,25 +29,122 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.35, delay, ease: [0.16, 1, 0.3, 1] },
 });
 
-// ─── Loading State ────────────────────────────────────────────────────────────
-function LoadingState() {
+// ─── Skeleton Screen Component ───────────────────────────────────────────────
+function ProductDetailsSkeleton() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-16 text-center">
-      <div className="w-16 h-16 rounded-[20px] bg-[#F1F5F9] flex items-center justify-center mb-4 border border-[#E5E7EB]">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        >
-          <Loader2 size={30} className="text-[#DC2626]" />
-        </motion.div>
-      </div>
-      <p className="text-[16px] text-[#0F172A] font-semibold">
-        Fetching product information…
-      </p>
-      <p className="mt-1 text-[14px] text-[#6B7280]">
-        Please wait a moment while we retrieve the latest details.
-      </p>
-    </div>
+    <SkeletonTheme baseColor="#E2E8F0" highlightColor="#F8FAFC">
+      <section className="w-full bg-[#F8FAFC] min-h-[calc(100vh-72px)] py-4 sm:py-6 lg:py-10 pb-28 md:pb-12">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-5 lg:px-6">
+
+          {/* Breadcrumb Skeleton */}
+          <div className="mb-4 sm:mb-6 flex items-center gap-2">
+            <Skeleton width={48} height={16} borderRadius={6} />
+            <ChevronRight size={14} className="text-[#CBD5E1] shrink-0" />
+            <Skeleton width={64} height={16} borderRadius={6} />
+            <ChevronRight size={14} className="text-[#CBD5E1] shrink-0" />
+            <Skeleton width={130} height={16} borderRadius={6} />
+          </div>
+
+          {/* Back Link Button Skeleton */}
+          <div className="mb-4 sm:mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#FFFFFF] border border-[#E5E7EB]">
+              <ArrowLeft size={16} className="text-[#94A3B8]" />
+              <Skeleton width={96} height={16} borderRadius={6} />
+            </div>
+          </div>
+
+          {/* Main Product Display Card Skeleton */}
+          <div className="bg-[#FFFFFF] rounded-[20px] sm:rounded-[24px] border border-[#E5E7EB] shadow-sm overflow-hidden flex flex-col md:flex-row">
+            {/* Image Area Skeleton */}
+            <div className="w-full md:w-1/2 bg-gradient-to-b from-[#F8FAFC] to-[#F1F5F9] border-b md:border-b-0 md:border-r border-[#E5E7EB] relative flex items-center justify-center p-6 sm:p-10 lg:p-12 min-h-[300px] sm:min-h-[400px] md:min-h-[500px]">
+              <div className="w-full h-full max-w-[280px] sm:max-w-[360px] md:max-w-[420px] aspect-square flex items-center justify-center p-4">
+                <Skeleton
+                  width="100%"
+                  height="100%"
+                  borderRadius={18}
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+
+            {/* Info & Purchase Details Section Skeleton */}
+            <div className="w-full md:w-1/2 p-5 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
+              <div>
+                {/* Product Badges Skeleton */}
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <Skeleton width={52} height={24} borderRadius={6} />
+                  <Skeleton width={116} height={24} borderRadius={9999} />
+                  <Skeleton width={136} height={24} borderRadius={9999} />
+                </div>
+
+                {/* Product Title Skeleton */}
+                <div className="space-y-2 mb-5">
+                  <Skeleton width="85%" height={32} borderRadius={8} />
+                  <Skeleton width="55%" height={32} borderRadius={8} />
+                </div>
+
+                {/* Price Box Skeleton */}
+                <div className="bg-[#F8FAFC] border border-[#E5E7EB] rounded-[16px] p-4 sm:p-5 mb-6 space-y-3">
+                  <Skeleton width={110} height={14} borderRadius={4} />
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <Skeleton width={140} height={36} borderRadius={8} />
+                    <Skeleton width={160} height={16} borderRadius={6} />
+                  </div>
+                  <Skeleton width={220} height={14} borderRadius={4} />
+                </div>
+
+                {/* Enterprise B2B Trust Grid Skeleton */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="p-3 rounded-[12px] bg-[#F1F5F9]/60 border border-[#E5E7EB] flex items-center gap-2.5">
+                    <Skeleton width={32} height={32} borderRadius={8} />
+                    <div className="space-y-1 flex-1">
+                      <Skeleton width={68} height={14} borderRadius={4} />
+                      <Skeleton width={88} height={11} borderRadius={4} />
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-[12px] bg-[#F1F5F9]/60 border border-[#E5E7EB] flex items-center gap-2.5">
+                    <Skeleton width={32} height={32} borderRadius={8} />
+                    <div className="space-y-1 flex-1">
+                      <Skeleton width={78} height={14} borderRadius={4} />
+                      <Skeleton width={88} height={11} borderRadius={4} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Description Skeleton */}
+                <div className="pt-5 border-t border-[#E5E7EB] space-y-2">
+                  <Skeleton width={150} height={16} borderRadius={6} className="mb-2" />
+                  <Skeleton width="100%" height={14} borderRadius={6} />
+                  <Skeleton width="92%" height={14} borderRadius={6} />
+                  <Skeleton width="78%" height={14} borderRadius={6} />
+                </div>
+              </div>
+
+              {/* Desktop Action Buttons Skeleton */}
+              <div className="pt-4 border-t border-[#E5E7EB] hidden md:flex gap-3">
+                <div className="flex-1">
+                  <Skeleton height={52} borderRadius={12} />
+                </div>
+                <div className="flex-1">
+                  <Skeleton height={52} borderRadius={12} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Mobile Sticky Bottom Bar Skeleton */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-[#E5E7EB] z-40 flex items-center gap-2.5">
+          <div className="flex-1">
+            <Skeleton height={48} borderRadius={12} />
+          </div>
+          <div className="flex-1">
+            <Skeleton height={48} borderRadius={12} />
+          </div>
+        </div>
+      </section>
+    </SkeletonTheme>
   );
 }
 
@@ -173,7 +270,7 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [fetchProductDetails]);
 
-  if (loading) return <LoadingState />;
+  if (loading) return <ProductDetailsSkeleton />;
   if (error) return <ErrorState message={error} onRetry={fetchProductDetails} />;
   if (!product || product.is_active === false) return <NotFoundState />;
 

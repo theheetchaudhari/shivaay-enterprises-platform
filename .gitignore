@@ -43,3 +43,6 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Local Engineering Notebook (personal learning — not for version control)
+/docs/shivaay-engineering-notebook/
