@@ -7,6 +7,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { publicSupabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 
+// ─── Search Placeholder Suggestions ──────────────────────────────────────────
+// Edit, add, or remove words here to change the animated typing placeholder:
+const SEARCH_SUGGESTIONS = ['Water', 'Masala', 'Pepsi', 'Coca Cola'];
+
 // ─── Product Card Component ───────────────────────────────────────────────────
 function ProductCard({ product, index }) {
   const [imgError, setImgError] = useState(false);
@@ -290,6 +294,45 @@ const Products = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Typing animation state for the search placeholder
+  const [placeholderWord, setPlaceholderWord] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [wordIndex, setWordIndex] = useState(0);
+
+  // Animated typing effect that loops through SEARCH_SUGGESTIONS
+  useEffect(() => {
+    if (!SEARCH_SUGGESTIONS.length) return;
+
+    const currentTarget = SEARCH_SUGGESTIONS[wordIndex % SEARCH_SUGGESTIONS.length];
+
+    if (!isDeleting) {
+      if (placeholderWord === currentTarget) {
+        const pauseTimeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, 1600);
+        return () => clearTimeout(pauseTimeout);
+      }
+
+      const typeTimeout = setTimeout(() => {
+        setPlaceholderWord(currentTarget.slice(0, placeholderWord.length + 1));
+      }, 90);
+      return () => clearTimeout(typeTimeout);
+    } else {
+      if (placeholderWord === '') {
+        const nextWordTimeout = setTimeout(() => {
+          setIsDeleting(false);
+          setWordIndex((prev) => (prev + 1) % SEARCH_SUGGESTIONS.length);
+        }, 300);
+        return () => clearTimeout(nextWordTimeout);
+      }
+
+      const deleteTimeout = setTimeout(() => {
+        setPlaceholderWord(currentTarget.slice(0, placeholderWord.length - 1));
+      }, 45);
+      return () => clearTimeout(deleteTimeout);
+    }
+  }, [placeholderWord, isDeleting, wordIndex]);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -366,7 +409,7 @@ const Products = () => {
                 <input
                   id="products-search-input"
                   type="text"
-                  placeholder="Search products…"
+                  placeholder={`Search "${placeholderWord}"`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-11 bg-[#FFFFFF] border border-[#E2E8F0] rounded-[12px] text-[14px] text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F172A] focus:ring-2 focus:ring-[#0F172A]/10 transition-all pl-10 pr-10 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
